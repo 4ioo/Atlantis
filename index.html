@@ -160,6 +160,7 @@
 const PT = 'America/Los_Angeles';
 const LOCAL_TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (_) { return 'UTC'; } })();
 const AR_LOCALE = 'ar-u-ca-gregory-nu-latn';
+const TRANSLATOR_URL = 'https://sky-translator.tyamo18.workers.dev';
 const $ = (id) => document.getElementById(id);
 const EVENT_DEFS = [
 {id:'geyser', name:'النافورة', icon:'♨️', desc:'جزر الملاذ · جمع الشمع', minute:5, hours:[0,2,4,6,8,10,12,14,16,18,20,22], duration:10},
@@ -356,6 +357,22 @@ if(!list.length){$('timelineGrid').innerHTML='<p class="empty-state">لا توج
 $('timelineGrid').innerHTML=list.slice(0,9).map(item=>`<article class="timeline-card"><h3>${escapeHtml(item.title_ar||item.title||'حدث قادم')}</h3>${item.title_ar&&item.title?`<div class="timeline-source" dir="ltr">${escapeHtml(item.title)}</div>`:''}<div class="timeline-detail">${escapeHtml(item.detail||'راجع المصدر للتفاصيل')}</div></article>`).join('');
 }
 function hasArabic(text){return /[\u0600-\u06FF]/.test(text || '');}
+async function translateWithWorker(text) {
+if (!text || !text.trim()) return '';
+try {
+const res = await fetch(TRANSLATOR_URL, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ text: text.slice(0, 4500) })
+});
+if (!res.ok) throw new Error('Worker error ' + res.status);
+const data = await res.json();
+return data.translatedText || '';
+} catch (e) {
+console.error('Translation failed:', e);
+return '';
+}
+}
 function renderNews(data){
 const list = Array.isArray(data?.news) ? data.news : [];
 if (!list.length) { $('newsGrid').innerHTML='<p class="empty-state">لم تصل الأخبار بعد.</p>'; return; }
@@ -373,7 +390,7 @@ ${summary ? `<p>${escapeHtml(summary)}</p>` : ''}
 </article>`;
 }).join('');
 document.querySelectorAll('.news-card.clickable').forEach(card => {
-card.addEventListener('click', () => {
+card.addEventListener('click', async () => {
 const i = Number(card.dataset.newsIndex);
 const item = list[i];
 const full = document.getElementById('news-full-' + i);
@@ -383,14 +400,23 @@ full.style.display = 'none';
 if (toggle) toggle.textContent = 'اضغط للقراءة ▾';
 return;
 }
-const fullText = item.full_en || item.summary_en || '';
-full.innerHTML = `
-<div style="margin-bottom:10px;color:var(--muted);font-size:10px;">الخبر الكامل بالإنجليزية من Steam:</div>
-<div style="font-size:11px;line-height:1.8;color:#d5e3ea;white-space:pre-wrap;max-height:300px;overflow-y:auto;">${escapeHtml(fullText.slice(0, 3000))}${fullText.length > 3000 ? '...' : ''}</div>
-<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" class="button small" style="margin-top:12px;display:inline-block;">📖 اقرأ على Steam</a>
-`;
 full.style.display = 'block';
 if (toggle) toggle.textContent = 'إغلاق ▴';
+// إذا الترجمة مخزنة
+if (item.full_ar && hasArabic(item.full_ar) && item.full_ar.length > 100) {
+full.textContent = item.full_ar;
+return;
+}
+// ترجم الآن
+full.innerHTML = '<span class="loading-ring"></span> جارٍ الترجمة…';
+const src = item.full_en || item.summary_en || item.title || '';
+const translated = await translateWithWorker(src);
+if (translated && hasArabic(translated)) {
+item.full_ar = translated;
+full.textContent = translated;
+} else {
+full.innerHTML = '<p class="notice">⚠️ تعذّرت الترجمة حاليًا. <a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener">اقرأ على Steam</a></p>';
+}
 });
 });
 }
