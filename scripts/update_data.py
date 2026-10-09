@@ -39,15 +39,55 @@ SPIRIT_TRANSLATIONS = {
     "Confetti Cousin": "قريب قصاصات الورق",
     "Admiring Actor": "الممثل المعجب",
     "Dancing Performer": "المؤدي الراقص",
-}
-
-TITLE_TRANSLATIONS = {
-    "This Month in Sky": "هذا الشهر في Sky",
-    "Update": "تحديث",
-    "Hotfix": "إصلاح عاجل",
-    "Dear Van Gogh": "عزيزي فان جوخ",
-    "Sky News": "أخبار Sky",
-    "Patch Notes": "ملاحظات التصحيح",
+    "Spinning Mentor": "المعلّم الدوّار",
+    "Daydream Forester": "حارس أحلام اليقظة",
+    "Greeting Shaman": "الشامان المرحّب",
+    "Provoking Performer": "المؤدي المستفز",
+    "Saluting Captain": "القبطان المُحيّي",
+    "Backflipping Champion": "بطل الشقلبة الخلفية",
+    "Handstanding Thrillseeker": "الباحث عن الإثارة",
+    "Laughing Light Catcher": "ملتقط الضوء الضاحك",
+    "Crab Whisperer": "همّاس السلطعون",
+    "Slumbering Shipwright": "بنّاء السفن النائم",
+    "Hairtousle Teen": "المراهق الأشعث",
+    "Festival Spin Dancer": "راقص المهرجان الدوّار",
+    "Chuckling Scout": "الكشّاف الضاحك",
+    "Marching Adventurer": "المغامر المسير",
+    "Playfighting Herbalist": "عشّاب المعارك",
+    "Scarecrow Farmhand": "عامل الحقل الفزّاعة",
+    "Lookout Scout": "الكشّاف المراقب",
+    "Troupe Juggler": "بهلوان الفرقة",
+    "Ceremonial Worshiper": "المُتعبد الاحتفالي",
+    "Rallying Thrillseeker": "الباحث عن الإثارة المتحمس",
+    "Star Collector": "جامع النجوم",
+    "Praying Acolyte": "الخادم المصلّي",
+    "Stretching Lamplighter": "مشعل المصابيح المتمدد",
+    "Bowing Medalist": "الحاصل على الميدالية المُنحني",
+    "Proud Victor": "المنتصر الفخور",
+    "Manta Whisperer": "همّاس المانتا",
+    "Turtle Whisperer": "همّاس السلحفاة",
+    "Sightseer": "السائح",
+    "Flipping Jester": "المهرج القافز",
+    "Nodding Muralist": "رسّام الجداريات المُومئ",
+    "Indifferent Alchemist": "الخيميائي غير المبالي",
+    "Thoughtful Director": "المخرج المتأمل",
+    "Reassuring Ranger": "الحارس المُطمئن",
+    "Hiking Grouch": "المتشائم المتجول",
+    "Fruitful Empath": "المتعاطف المثمر",
+    "Sparkler Parent": "الوالد المتلألئ",
+    "Modest Dancer": "الراقص المتواضع",
+    "Blushing Prospector": "المنقّب الخجول",
+    "Apologetic Lumberjack": "الحطّاب الاعتذاري",
+    "Reserved Physician": "الطبيب المتحفظ",
+    "Chill Sunbather": "المستلقي الهادئ",
+    "Wise Grandparent": "الجد الحكيم",
+    "Veteran's Guide": "دليل المحاربين القدامى",
+    "Twirling Champion": "البطل الدوّار",
+    "Crab Walker": "ماشي السلطعون",
+    "Snoozing Carpenter": "النجار النائم",
+    "Peeking Postman": "ساعي البريد المتلصص",
+    "Bearhug Hermit": "الناسك المُعانق",
+    "Bumbling Boatswain": "الملاح الأخرق",
 }
 
 class TextExtractor(HTMLParser):
@@ -76,7 +116,6 @@ def has_arabic(text):
     return bool(re.search(r"[\u0600-\u06FF]", text or ""))
 
 def translate_short(text, max_len=400):
-    """Translate a short text to Arabic with retries."""
     if not text or not text.strip():
         return ""
     text = text.strip()[:max_len]
@@ -237,7 +276,6 @@ def update_timeline(doc, now_utc):
         return False
 
 def update_news(doc, now_utc):
-    """Fetch Steam news and translate title + summary (short texts)."""
     url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2325290&count=8&maxlength=0&format=json"
     try:
         payload = fetch_json(url)
@@ -266,10 +304,8 @@ def update_news(doc, now_utc):
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
-            # نبني ملخص قصير
             summary_en = contents[:280] if contents else ""
             old_item = old_by_url.get(item_url)
-            # نستخدم الـ cache إذا العنوان والملخص ما تغيّرا والترجمة موجودة
             if (old_item and old_item.get("title") == title
                 and old_item.get("summary_en") == summary_en
                 and old_item.get("title_ar") and has_arabic(old_item.get("title_ar"))
@@ -277,7 +313,6 @@ def update_news(doc, now_utc):
                 news.append(old_item)
                 print(f"Cached: {title[:50]}")
                 continue
-            # ترجمة العنوان والملخص (نصوص قصيرة)
             title_ar = translate_short(title, max_len=200)
             time.sleep(1.5)
             summary_ar = translate_short(summary_en, max_len=400) if summary_en else ""
@@ -305,8 +340,106 @@ def update_news(doc, now_utc):
         return False
 
 def update_spirit(doc, now_utc):
-    """Keep existing spirit data if available (no external source)."""
-    return False
+    """Fetch current traveling spirit from skygame-data assets."""
+    base = "https://unpkg.com/skygame-data@latest/assets"
+    try:
+        ts_data = fetch_json(f"{base}/traveling-spirits.json")
+    except Exception as exc:
+        print(f"WARN: couldn't fetch traveling-spirits.json: {exc}", file=sys.stderr)
+        return False
+
+    items = ts_data.get("items", []) if isinstance(ts_data, dict) else []
+    if not items:
+        print("WARN: no traveling-spirits items", file=sys.stderr)
+        return False
+
+    parsed = []
+    for it in items:
+        try:
+            d = dt.datetime.strptime(it["date"], "%Y-%m-%d").replace(tzinfo=PT)
+            parsed.append((d, it))
+        except (KeyError, ValueError):
+            continue
+    if not parsed:
+        return False
+    parsed.sort(key=lambda x: x[0])
+
+    now_pt = now_utc.astimezone(PT)
+    current = None
+    upcoming = None
+    for start_dt, it in reversed(parsed):
+        end_dt = start_dt + dt.timedelta(days=4)
+        if start_dt <= now_pt < end_dt:
+            current = (start_dt, end_dt, it)
+            break
+        elif start_dt > now_pt and upcoming is None:
+            upcoming = (start_dt, end_dt, it)
+
+    chosen = current or upcoming
+    if not chosen:
+        last = parsed[-1]
+        chosen = (last[0], last[0] + dt.timedelta(days=4), last[1])
+    start_dt, end_dt, item = chosen
+
+    spirit_guid = item.get("spirit")
+    spirit_name = None
+    image_url = None
+
+    if spirit_guid:
+        try:
+            spirits_data = fetch_json(f"{base}/spirits.json")
+            for s in spirits_data.get("items", []):
+                if s.get("guid") == spirit_guid:
+                    spirit_name = s.get("name")
+                    image_url = s.get("imageUrl")
+                    break
+        except Exception as exc:
+            print(f"WARN: couldn't fetch spirits.json: {exc}", file=sys.stderr)
+
+    if not spirit_name:
+        try:
+            eis = fetch_json(f"{base}/event-instance-spirits.json")
+            for e in eis.get("items", []):
+                if e.get("guid") == spirit_guid or e.get("spirit") == spirit_guid:
+                    name = e.get("name")
+                    if name:
+                        spirit_name = name
+                        break
+        except Exception:
+            pass
+
+    if not spirit_name:
+        spirit_name = "Traveling Spirit"
+
+    name_ar = SPIRIT_TRANSLATIONS.get(spirit_name, spirit_name)
+
+    old_spirit = doc.get("spirit", {})
+    old_start = old_spirit.get("start_utc")
+    new_start = start_dt.astimezone(UTC).isoformat().replace("+00:00", "Z")
+
+    spirit = {
+        "name": spirit_name,
+        "name_ar": name_ar,
+        "start_utc": new_start,
+        "end_utc": end_dt.astimezone(UTC).isoformat().replace("+00:00", "Z"),
+        "source_kind": "skygame-data",
+        "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
+        "status_label": "الروح الحالية" if current else "الروح القادمة",
+        "last_updated": now_utc.isoformat().replace("+00:00", "Z"),
+    }
+
+    if image_url:
+        spirit["image_url"] = image_url
+
+    if old_spirit.get("name") == spirit_name:
+        for key in ("prices", "cosmetics", "prices_note", "location_ar", "image_path"):
+            if old_spirit.get(key):
+                spirit[key] = old_spirit[key]
+
+    doc["spirit"] = spirit
+    changed = old_start != new_start or old_spirit.get("name") != spirit_name
+    print(f"Traveling Spirit: {spirit_name} ({start_dt.date()} to {end_dt.date()})")
+    return changed
 
 def main():
     now=dt.datetime.now(UTC).replace(microsecond=0)
@@ -316,6 +449,7 @@ def main():
     else: doc={}
     changed=False
     changed |= update_quests(doc,now)
+    changed |= update_spirit(doc,now)
     changed |= update_timeline(doc,now)
     changed |= update_news(doc,now)
     if changed:
