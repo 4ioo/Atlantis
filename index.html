@@ -378,6 +378,10 @@ async function translateWithWorker(text) {
   }
 }
 
+function hasArabic(text) {
+  return /[\u0600-\u06FF]/.test(text || '');
+}
+
 function renderNews(data){
   const list = Array.isArray(data?.news) ? data.news : [];
   if (!list.length) { $('newsGrid').innerHTML='<p class="empty-state">لم تصل الأخبار بعد.</p>'; return; }
@@ -385,8 +389,8 @@ function renderNews(data){
     const date = item.published_utc
       ? new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium'}).format(new Date(item.published_utc))
       : 'تاريخ غير متوفر';
-    const title = item.title_ar || item.title || 'إعلان Sky';
-    const summary = item.summary_ar || item.summary || '';
+    const title = (hasArabic(item.title_ar) ? item.title_ar : item.title) || 'إعلان Sky';
+    const summary = (hasArabic(item.summary_ar) ? item.summary_ar : item.summary) || '';
     return `<article class="news-card clickable" data-news-index="${i}">
       <div class="news-title">${escapeHtml(title)}</div>
       <div class="news-date">${escapeHtml(date)} · إعلان رسمي <span class="news-toggle">اضغط للقراءة ▾</span></div>
@@ -408,7 +412,8 @@ function renderNews(data){
         return;
       }
 
-      if (item.full_ar && item.full_ar !== item.full_en) {
+      // فحص إذا الترجمة المخزنة فيها حروف عربية فعلاً
+      if (item.full_ar && hasArabic(item.full_ar) && item.full_ar.length > 50) {
         full.textContent = item.full_ar;
         full.style.display = 'block';
         if (toggle) toggle.textContent = 'إغلاق ▴';
@@ -422,7 +427,7 @@ function renderNews(data){
       const sourceText = item.full_en || item.summary || item.title || '';
       const translated = await translateWithWorker(sourceText);
 
-      if (translated) {
+      if (translated && hasArabic(translated)) {
         item.full_ar = translated;
         full.textContent = translated;
       } else {
