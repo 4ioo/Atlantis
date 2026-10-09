@@ -1,5 +1,5 @@
 {
-  "last_updated_utc": "2026-10-09T17:18:16Z",
+  "last_updated_utc": "2026-10-09T18:04:44Z",
   "daily_quests_date_pacific": "2026-10-09",
   "daily_quests_en": [
     "Wave to a player",
@@ -49,58 +49,74 @@
   "news": [
     {
       "title": "This Month in Sky: October 2026 Edition",
+      "title_ar": "This Month in Sky: October 2026 Edition",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656387951",
       "published_utc": "2026-10-02T23:05:33Z",
-      "summary": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. It’s been one year since we started This Mont"
+      "summary": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. It’s been one year since we started This Mont",
+      "summary_ar": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. It’s been one year since we started This Mont"
     },
     {
       "title": "This Month in Sky: September 2026 Edition",
+      "title_ar": "This Month in Sky: September 2026 Edition",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1842846814448102",
       "published_utc": "2026-09-04T23:30:12Z",
-      "summary": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. This month, we have the final days of Dear Va"
+      "summary": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. This month, we have the final days of Dear Va",
+      "summary_ar": "Hello, Adventurers! Welcome to “This Month in Sky”, where we share Sky news, community activities, and creations from Sky Kids around the world. This month, we have the final days of Dear Va"
     },
     {
       "title": "Update 34.5 - August 25th, 2026",
+      "title_ar": "Update 34.5 - August 25th, 2026",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1841579228679568",
       "published_utc": "2026-08-25T20:23:10Z",
-      "summary": "Greetings, Adventurers!Update 34.5 is launching today on Android, Huawei, iOS, PlayStation, Switch, and Steam! For a preview of what’s coming to Sky, be sure to check out This Month in Sky!N"
+      "summary": "Greetings, Adventurers!Update 34.5 is launching today on Android, Huawei, iOS, PlayStation, Switch, and Steam! For a preview of what’s coming to Sky, be sure to check out This Month in Sky!N",
+      "summary_ar": "Greetings, Adventurers!Update 34.5 is launching today on Android, Huawei, iOS, PlayStation, Switch, and Steam! For a preview of what’s coming to Sky, be sure to check out This Month in Sky!N"
     },
     {
       "title": "Hotfix 34.3 - August 6, 2026",
+      "title_ar": "Hotfix 34.3 - August 6, 2026",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1840310314342961",
       "published_utc": "2026-08-06T19:29:06Z",
-      "summary": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include: \\ Fixed an issue that caused some players to have to repeat Quest 1 before being able to move on to Quest "
+      "summary": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include: \\ Fixed an issue that caused some players to have to repeat Quest 1 before being able to move on to Quest ",
+      "summary_ar": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include: \\ Fixed an issue that caused some players to have to repeat Quest 1 before being able to move on to Quest "
     },
     {
       "title": "This Month in Sky: August 2026 Edition",
+      "title_ar": "This Month in Sky: August 2026 Edition",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1839676055896077",
       "published_utc": "2026-08-03T23:30:02Z",
-      "summary": "Sky NewsUpdate 34.5August 25thOur next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goe"
+      "summary": "Sky NewsUpdate 34.5August 25thOur next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goe",
+      "summary_ar": "Sky NewsUpdate 34.5August 25thOur next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goe"
     },
     {
       "title": "Hotfix 34.2 - July 28, 2026",
+      "title_ar": "Hotfix 34.2 - July 28, 2026",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1839041357039102",
       "published_utc": "2026-07-28T19:23:19Z",
-      "summary": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include:\\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in"
+      "summary": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include:\\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in",
+      "summary_ar": "Greetings, Adventurers! We have a hotfix! Changes and fixes in this update include:\\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in"
     },
     {
       "title": "Hotfix 34.1 - July 18, 2026",
+      "title_ar": "Hotfix 34.1 - July 18, 2026",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1838407329267884",
       "published_utc": "2026-07-21T02:01:14Z",
-      "summary": "Greetings, Adventurers! We have a hotfix!Please Note: Nintendo Switch will receive these fixes in update 34.2 Changes and fixes in this update include: Fixed an issue where Nest capacity upg"
+      "summary": "Greetings, Adventurers! We have a hotfix!Please Note: Nintendo Switch will receive these fixes in update 34.2 Changes and fixes in this update include: Fixed an issue where Nest capacity upg",
+      "summary_ar": "Greetings, Adventurers! We have a hotfix!Please Note: Nintendo Switch will receive these fixes in update 34.2 Changes and fixes in this update include: Fixed an issue where Nest capacity upg"
     },
     {
       "title": "Dear Van Gogh",
+      "title_ar": "Dear Van Gogh",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1838407329258630",
       "published_utc": "2026-07-17T07:00:27Z",
-      "summary": "Three hearts, one infinite canvas, together we illuminate a starry night. Dear Van Gogh is an interactive journey through the life, art, and inner world of Vincent van Gogh. Travel inside hi"
+      "summary": "Three hearts, one infinite canvas, together we illuminate a starry night. Dear Van Gogh is an interactive journey through the life, art, and inner world of Vincent van Gogh. Travel inside hi",
+      "summary_ar": "Three hearts, one infinite canvas, together we illuminate a starry night. Dear Van Gogh is an interactive journey through the life, art, and inner world of Vincent van Gogh. Travel inside hi"
     }
   ],
   "quest_source": "https://thatskyapplication.com/daily-guides",
   "quest_api_source": "https://quest.skyapi.shhy.in/?lang=en",
   "quest_data_source": "https://quest.skyapi.shhy.in/?lang=en",
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-10-09T17:18:16Z",
+  "timeline_updated_utc": "2026-10-09T18:04:44Z",
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-10-09T17:18:16Z"
+  "news_updated_utc": "2026-10-09T18:04:44Z"
 }
