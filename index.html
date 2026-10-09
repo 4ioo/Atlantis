@@ -121,7 +121,7 @@
 </section>
 
 <section class="panel wide-panel" id="news">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">📰</div><div><h2>آخر إعلانات Sky الرسمية</h2><p>من أخبار Steam الرسمية. اضغط على أي خبر لقراءته كاملًا مترجمًا.</p></div></div><span class="date-tag">يتم جلبها تلقائيًا</span></div>
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">📰</div><div><h2>آخر إعلانات Sky الرسمية</h2><p>من أخبار Steam الرسمية. اضغط على أي خبر لقراءته كاملًا.</p></div></div><span class="date-tag">يتم جلبها تلقائيًا</span></div>
 <div class="news-grid" id="newsGrid"><p class="empty-state">تظهر الإعلانات هنا بعد نجاح مزامنة الأخبار.</p></div>
 <div class="status-strip"><span class="dot"></span><span id="lastUpdated">آخر تحديث: ننتظر أول مزامنة</span></div>
 </section>
@@ -160,7 +160,6 @@
 const PT = 'America/Los_Angeles';
 const LOCAL_TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (_) { return 'UTC'; } })();
 const AR_LOCALE = 'ar-u-ca-gregory-nu-latn';
-const TRANSLATOR_URL = 'https://sky-translator.tyamo18.workers.dev';
 const $ = (id) => document.getElementById(id);
 const EVENT_DEFS = [
 {id:'geyser', name:'النافورة', icon:'♨️', desc:'جزر الملاذ · جمع الشمع', minute:5, hours:[0,2,4,6,8,10,12,14,16,18,20,22], duration:10},
@@ -171,7 +170,6 @@ const EVENT_DEFS = [
 let liveData = null, toastTimer = null, resetTarget = null, soundEnabled = false, audioContext = null;
 let lastWishAlertKey = '', wishList = [], checkedQuestDate = '', dataRefreshTimer = null, deferredInstallPrompt = null;
 const eventCache = new Map(), eventWasActive = new Map(), checkedQuestTexts = new Set();
-const translatedCache = new Map();
 const dateParts = (date, timeZone) => {
 const parts = new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(date);
 return Object.fromEntries(parts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
@@ -357,87 +355,45 @@ $('timelineStatus').textContent=data?.timeline_updated_utc?'من دليل الم
 if(!list.length){$('timelineGrid').innerHTML='<p class="empty-state">لا توجد بيانات مواسم متاحة حاليًا.</p>';return;}
 $('timelineGrid').innerHTML=list.slice(0,9).map(item=>`<article class="timeline-card"><h3>${escapeHtml(item.title_ar||item.title||'حدث قادم')}</h3>${item.title_ar&&item.title?`<div class="timeline-source" dir="ltr">${escapeHtml(item.title)}</div>`:''}<div class="timeline-detail">${escapeHtml(item.detail||'راجع المصدر للتفاصيل')}</div></article>`).join('');
 }
-
-async function translateWithWorker(text) {
-  if (!text || !text.trim()) return '';
-  if (translatedCache.has(text)) return translatedCache.get(text);
-  try {
-    const res = await fetch(TRANSLATOR_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
-    if (!res.ok) throw new Error('Worker error ' + res.status);
-    const data = await res.json();
-    const result = data.translatedText || '';
-    if (result) translatedCache.set(text, result);
-    return result;
-  } catch (e) {
-    console.error('Translation failed:', e);
-    return '';
-  }
-}
-
-function hasArabic(text) {
-  return /[\u0600-\u06FF]/.test(text || '');
-}
-
+function hasArabic(text){return /[\u0600-\u06FF]/.test(text || '');}
 function renderNews(data){
-  const list = Array.isArray(data?.news) ? data.news : [];
-  if (!list.length) { $('newsGrid').innerHTML='<p class="empty-state">لم تصل الأخبار بعد.</p>'; return; }
-  $('newsGrid').innerHTML = list.slice(0,6).map((item, i) => {
-    const date = item.published_utc
-      ? new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium'}).format(new Date(item.published_utc))
-      : 'تاريخ غير متوفر';
-    const title = (hasArabic(item.title_ar) ? item.title_ar : item.title) || 'إعلان Sky';
-    const summary = (hasArabic(item.summary_ar) ? item.summary_ar : item.summary) || '';
-    return `<article class="news-card clickable" data-news-index="${i}">
-      <div class="news-title">${escapeHtml(title)}</div>
-      <div class="news-date">${escapeHtml(date)} · إعلان رسمي <span class="news-toggle">اضغط للقراءة ▾</span></div>
-      ${summary ? `<p>${escapeHtml(summary)}</p>` : ''}
-      <div class="news-full" id="news-full-${i}" style="display:none"></div>
-    </article>`;
-  }).join('');
-
-  document.querySelectorAll('.news-card.clickable').forEach(card => {
-    card.addEventListener('click', async () => {
-      const i = Number(card.dataset.newsIndex);
-      const item = list[i];
-      const full = document.getElementById('news-full-' + i);
-      const toggle = card.querySelector('.news-toggle');
-
-      if (full.style.display === 'block') {
-        full.style.display = 'none';
-        if (toggle) toggle.textContent = 'اضغط للقراءة ▾';
-        return;
-      }
-
-      // فحص إذا الترجمة المخزنة فيها حروف عربية فعلاً
-      if (item.full_ar && hasArabic(item.full_ar) && item.full_ar.length > 50) {
-        full.textContent = item.full_ar;
-        full.style.display = 'block';
-        if (toggle) toggle.textContent = 'إغلاق ▴';
-        return;
-      }
-
-      full.style.display = 'block';
-      full.innerHTML = '<span class="loading-ring"></span> جارٍ ترجمة الخبر…';
-      if (toggle) toggle.textContent = 'إغلاق ▴';
-
-      const sourceText = item.full_en || item.summary || item.title || '';
-      const translated = await translateWithWorker(sourceText);
-
-      if (translated && hasArabic(translated)) {
-        item.full_ar = translated;
-        full.textContent = translated;
-      } else {
-        full.textContent = sourceText;
-        full.insertAdjacentHTML('beforeend', '<p class="notice">⚠️ تعذّرت الترجمة حاليًا، هذا هو النص الأصلي.</p>');
-      }
-    });
-  });
+const list = Array.isArray(data?.news) ? data.news : [];
+if (!list.length) { $('newsGrid').innerHTML='<p class="empty-state">لم تصل الأخبار بعد.</p>'; return; }
+$('newsGrid').innerHTML = list.slice(0,6).map((item, i) => {
+const date = item.published_utc
+? new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium'}).format(new Date(item.published_utc))
+: 'تاريخ غير متوفر';
+const title = (hasArabic(item.title_ar) ? item.title_ar : item.title) || 'إعلان Sky';
+const summary = (hasArabic(item.summary_ar) ? item.summary_ar : (item.summary_en || item.summary)) || '';
+return `<article class="news-card clickable" data-news-index="${i}">
+<div class="news-title">${escapeHtml(title)}</div>
+<div class="news-date">${escapeHtml(date)} · إعلان رسمي <span class="news-toggle">اضغط للقراءة ▾</span></div>
+${summary ? `<p>${escapeHtml(summary)}</p>` : ''}
+<div class="news-full" id="news-full-${i}" style="display:none"></div>
+</article>`;
+}).join('');
+document.querySelectorAll('.news-card.clickable').forEach(card => {
+card.addEventListener('click', () => {
+const i = Number(card.dataset.newsIndex);
+const item = list[i];
+const full = document.getElementById('news-full-' + i);
+const toggle = card.querySelector('.news-toggle');
+if (full.style.display === 'block') {
+full.style.display = 'none';
+if (toggle) toggle.textContent = 'اضغط للقراءة ▾';
+return;
 }
-
+const fullText = item.full_en || item.summary_en || '';
+full.innerHTML = `
+<div style="margin-bottom:10px;color:var(--muted);font-size:10px;">الخبر الكامل بالإنجليزية من Steam:</div>
+<div style="font-size:11px;line-height:1.8;color:#d5e3ea;white-space:pre-wrap;max-height:300px;overflow-y:auto;">${escapeHtml(fullText.slice(0, 3000))}${fullText.length > 3000 ? '...' : ''}</div>
+<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" class="button small" style="margin-top:12px;display:inline-block;">📖 اقرأ على Steam</a>
+`;
+full.style.display = 'block';
+if (toggle) toggle.textContent = 'إغلاق ▴';
+});
+});
+}
 function spiritTargetCost(){const p=liveData?.spirit?.prices;return Number(p?.candles??183);}
 function updateCandleCalculator(){
 const current=Math.max(0,Number($('candlesCurrent').value)||0);
