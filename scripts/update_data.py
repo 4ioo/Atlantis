@@ -12,6 +12,7 @@ import urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
 from zoneinfo import ZoneInfo
+from deep_translator import GoogleTranslator
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "live.json"
@@ -62,20 +63,15 @@ def get_pt_date(now_utc: dt.datetime) -> dt.date:
     return now_utc.astimezone(PT).date()
 
 def translate_text(text: str) -> str:
-    """Translate using MyMemory API (free, no key, 5000 words/day)."""
+    """Translate English text to Arabic using Google Translate (free)."""
     if not text or not text.strip():
         return ""
     try:
-        encoded = urllib.parse.quote(text[:500])
-        url = f"https://api.mymemory.translated.net/get?q={encoded}&langpair=en|ar"
-        payload = fetch_json(url)
-        result = payload.get("responseData", {}).get("translatedText", "")
-        if result and result.lower() != text.lower():
-            time.sleep(1.2)
-            return result
+        result = GoogleTranslator(source="en", target="ar").translate(text[:4900])
+        return result or text
     except Exception as exc:
-        print(f"WARN: mymemory translation failed: {exc}", file=sys.stderr)
-    return text
+        print(f"WARN: translation failed: {exc}", file=sys.stderr)
+        return text
 
 def translate_quest(text: str) -> str:
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -285,13 +281,16 @@ def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
         return False
 
 def update_news(doc: dict, now_utc: dt.datetime) -> bool:
-    url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2325290&count=8&maxlength=450&format=json"
+    """Fetch official Sky news from Steam, translate full content, and store."""
+    url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2325290&count=8&maxlength=0&format=json"
     try:
         payload = fetch_json(url)
         items = payload.get("appnews", {}).get("newsitems", [])
         if not isinstance(items, list) or not items:
             raise ValueError("Steam API returned no news items")
-        raw_items = []
+        old_news = doc.get("news", [])
+        old_by_url = {n.get("url"): n for n in old_news if isinstance(n, dict)}
+        news = []
         for item in items[:8]:
             title = html.unescape(str(item.get("title", "")).strip())
             item_url = str(item.get("url", "")).strip()
@@ -299,36 +298,39 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 continue
             contents = html.unescape(str(item.get("contents", "")))
             contents = re.sub(r"(?is)<(script|style).*?>.*?</\1>", " ", contents)
+            contents = re.sub(r"(?is)<br\s*/?>", "\n", contents)
+            contents = re.sub(r"(?is)</p>", "\n\n", contents)
             contents = re.sub(r"(?is)<[^>]+>", " ", contents)
             contents = re.sub(r"\[[^\]]*\]", " ", contents)
             contents = re.sub(r"https?://\S+", " ", contents)
-            contents = re.sub(r"\s+", " ", contents).strip()
+            contents = re.sub(r"[ \t]+", " ", contents)
+            contents = re.sub(r"\n{3,}", "\n\n", contents).strip()
             published = None
             try:
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
-            raw_items.append({
+            # تحقق إذا نفس الخبر محفوظ مسبقاً (نتجنب ترجمة ثانية)
+            old_item = old_by_url.get(item_url)
+            if old_item and old_item.get("title") == title and old_item.get("full_en") == contents:
+                news.append(old_item)
+                print(f"News kept from cache: {title[:50]}")
+                continue
+            # ترجمة العنوان والخبر الكامل
+            title_ar = translate_text(title)
+            full_ar = translate_text(contents) if contents else ""
+            news.append({
                 "title": title,
+                "title_ar": title_ar,
                 "url": item_url,
                 "published_utc": published,
-                "summary": contents[:190],
+                "full_en": contents,
+                "full_ar": full_ar,
             })
-        if not raw_items:
+            print(f"Translated news: {title[:50]}...")
+        if not news:
             raise ValueError("Steam news items did not contain usable headlines")
-        news = []
-        for r in raw_items:
-            title_ar = translate_text(r["title"])
-            summary_ar = translate_text(r["summary"]) if r["summary"] else ""
-            news.append({
-                "title": r["title"],
-                "title_ar": title_ar,
-                "url": r["url"],
-                "published_utc": r["published_utc"],
-                "summary": r["summary"],
-                "summary_ar": summary_ar,
-            })
-        changed = doc.get("news", []) != news
+        changed = old_news != news
         doc["news"] = news
         doc["news_source"] = "https://store.steampowered.com/news/app/2325290/"
         doc["news_updated_utc"] = now_utc.isoformat().replace("+00:00", "Z")
