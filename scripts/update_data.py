@@ -12,7 +12,6 @@ import urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from deep_translator import GoogleTranslator
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "live.json"
@@ -63,24 +62,20 @@ def get_pt_date(now_utc: dt.datetime) -> dt.date:
     return now_utc.astimezone(PT).date()
 
 def translate_text(text: str) -> str:
+    """Translate using MyMemory API (free, no key, 5000 words/day)."""
     if not text or not text.strip():
         return ""
     try:
-        return GoogleTranslator(source="en", target="ar").translate(text[:4900]) or text
+        encoded = urllib.parse.quote(text[:500])
+        url = f"https://api.mymemory.translated.net/get?q={encoded}&langpair=en|ar"
+        payload = fetch_json(url)
+        result = payload.get("responseData", {}).get("translatedText", "")
+        if result and result.lower() != text.lower():
+            time.sleep(1.2)
+            return result
     except Exception as exc:
-        print(f"WARN: translation failed: {exc}", file=sys.stderr)
-        return text
-
-def translate_batch(texts: list) -> list:
-    if not texts:
-        return []
-    cleaned = [t[:4900] if t else "" for t in texts]
-    try:
-        result = GoogleTranslator(source="en", target="ar").translate_batch(cleaned)
-        return result or cleaned
-    except Exception as exc:
-        print(f"WARN: batch translation failed: {exc}", file=sys.stderr)
-        return cleaned
+        print(f"WARN: mymemory translation failed: {exc}", file=sys.stderr)
+    return text
 
 def translate_quest(text: str) -> str:
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -321,15 +316,10 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
             })
         if not raw_items:
             raise ValueError("Steam news items did not contain usable headlines")
-        batch = []
-        for r in raw_items:
-            batch.append(r["title"])
-            batch.append(r["summary"] or "")
-        translated = translate_batch(batch)
         news = []
-        for i, r in enumerate(raw_items):
-            title_ar = translated[i*2] if i*2 < len(translated) else r["title"]
-            summary_ar = translated[i*2+1] if i*2+1 < len(translated) else r["summary"]
+        for r in raw_items:
+            title_ar = translate_text(r["title"])
+            summary_ar = translate_text(r["summary"]) if r["summary"] else ""
             news.append({
                 "title": r["title"],
                 "title_ar": title_ar,
@@ -361,6 +351,7 @@ def main():
     changed |= update_news(doc,now)
     if changed:
         doc["last_updated_utc"]=now.isoformat().replace("+00:00","Z")
+        DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
         DATA_FILE.write_text(json.dumps(doc,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         print("Wrote refreshed data to data/live.json")
     else:
