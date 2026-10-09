@@ -149,6 +149,71 @@ def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
     print(f"Daily quests fetched: {len(quests)} items for {date_pt} PT")
     return changed
 
+def update_spirit(doc: dict, now_utc: dt.datetime) -> bool:
+    """Fetch the current traveling spirit from skygame-data (used by SkyHelper bot)."""
+    url = "https://unpkg.com/skygame-data@latest/dist/everything.json"
+    try:
+        payload = fetch_json(url)
+    except Exception as exc:
+        print(f"WARN: couldn't fetch skygame-data: {exc}", file=sys.stderr)
+        return False
+    now_pt = now_utc.astimezone(PT)
+    spirit = None
+    candidates = []
+    if isinstance(payload, dict):
+        traveling = payload.get("travelingSpirits") or payload.get("traveling_spirits") or []
+        if isinstance(traveling, list):
+            for s in traveling:
+                if not isinstance(s, dict): continue
+                start = s.get("startDate") or s.get("start") or s.get("start_utc")
+                end = s.get("endDate") or s.get("end") or s.get("end_utc")
+                if not start or not end: continue
+                try:
+                    start_dt = dt.datetime.fromisoformat(str(start).replace("Z","+00:00"))
+                    end_dt = dt.datetime.fromisoformat(str(end).replace("Z","+00:00"))
+                except Exception:
+                    continue
+                if start_dt <= now_utc < end_dt:
+                    candidates.append((0, s, start_dt, end_dt))
+                elif start_dt > now_utc:
+                    delta = (start_dt - now_utc).total_seconds()
+                    candidates.append((1, s, start_dt, end_dt))
+    if not candidates:
+        print("WARN: no traveling spirit in skygame-data", file=sys.stderr)
+        return False
+    candidates.sort(key=lambda x: (x[0], x[2]))
+    _, s, start_dt, end_dt = candidates[0]
+    name = s.get("name") or s.get("name_en") or "Unknown Spirit"
+    name_ar = SPIRIT_TRANSLATIONS.get(name, name)
+    image = s.get("image") or s.get("imageUrl") or s.get("image_url") or ""
+    prices = s.get("prices") or s.get("costs") or {}
+    candles = prices.get("candles") or prices.get("regularCandles") or s.get("candles")
+    hearts = prices.get("hearts") or s.get("hearts")
+    ascended = prices.get("ascended") or prices.get("ascendedCandles") or s.get("ascended")
+    old_identity = (doc.get("spirit",{}).get("name"), doc.get("spirit",{}).get("start_utc"))
+    new_identity = (name, start_dt.astimezone(UTC).isoformat().replace("+00:00","Z"))
+    spirit = {
+        "name": name,
+        "name_ar": name_ar,
+        "start_utc": start_dt.astimezone(UTC).isoformat().replace("+00:00","Z"),
+        "end_utc": end_dt.astimezone(UTC).isoformat().replace("+00:00","Z"),
+        "source_kind": "skygame-data",
+        "status_label": "الروح الحالية" if start_dt <= now_utc < end_dt else "الروح القادمة",
+        "last_updated": now_utc.isoformat().replace("+00:00","Z"),
+    }
+    if image:
+        spirit["image_url"] = image
+    if candles or hearts or ascended:
+        spirit["prices"] = {
+            "candles": candles or 0,
+            "hearts": hearts or 0,
+            "ascended": ascended or 0,
+        }
+    doc["spirit"] = spirit
+    changed = old_identity != new_identity
+    print(f"Traveling Spirit: {name} ({start_dt.date()} to {end_dt.date()})")
+    return changed
+
 def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
     url = "https://thatskyapplication.com/daily-guides"
     try:
@@ -249,6 +314,7 @@ def main():
     else: doc={}
     changed=False
     changed |= update_quests(doc,now)
+    changed |= update_spirit(doc,now)
     changed |= update_timeline(doc,now)
     changed |= update_news(doc,now)
     if changed:
