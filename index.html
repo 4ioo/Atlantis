@@ -301,9 +301,15 @@ function escapeHtml(s) { return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<
 function renderSpiritArt(spirit) {
 const root=$('spiritArtWrap'); if(!root) return;
 const imagePath=String(spirit?.image_path||'');
-const url=/^assets\/[A-Za-z0-9._-]+\.(?:jpg|png|webp|gif)$/i.test(imagePath) ? new URL(imagePath,document.baseURI).href : '';
+const imageUrl=String(spirit?.image_url||'');
+let url='';
+if(imagePath && /^assets\/[A-Za-z0-9._-]+\.(?:jpg|png|webp|gif)$/i.test(imagePath)) {
+url = new URL(imagePath,document.baseURI).href;
+} else if(imageUrl && imageUrl.startsWith('https://')) {
+url = imageUrl;
+}
 if(!url) { root.innerHTML='<div class="spirit-art-placeholder">✧<div><small>تُحدّث صورة الروح تلقائيًا عند توفرها</small></div></div>'; return; }
-root.innerHTML=`<img class="spirit-art-img" src="${escapeHtml(url)}" alt="${escapeHtml(spirit.name_ar||spirit.name||'الروح المسافرة')}" loading="lazy"><div class="spirit-art-caption">${escapeHtml(spirit.name_ar||spirit.name||'الروح المسافرة')}</div>`;
+root.innerHTML=`<img class="spirit-art-img" src="${escapeHtml(url)}" alt="${escapeHtml(spirit.name_ar||spirit.name||'الروح المسافرة')}" loading="lazy" referrerpolicy="no-referrer"><div class="spirit-art-caption">${escapeHtml(spirit.name_ar||spirit.name||'الروح المسافرة')}</div>`;
 const img=root.querySelector('img');
 img.addEventListener('error',()=>{root.innerHTML='<div class="spirit-art-placeholder">✧<div><small>الصورة غير متاحة حاليًا</small></div></div>';},{once:true});
 }
