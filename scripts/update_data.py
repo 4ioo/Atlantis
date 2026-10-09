@@ -11,6 +11,7 @@ import urllib.parse
 from html.parser import HTMLParser
 from pathlib import Path
 from zoneinfo import ZoneInfo
+from deep_translator import GoogleTranslator
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "live.json"
@@ -59,6 +60,16 @@ def fetch_json(url: str):
 
 def get_pt_date(now_utc: dt.datetime) -> dt.date:
     return now_utc.astimezone(PT).date()
+
+def translate_text(text: str) -> str:
+    """Translate English text to Arabic using Google Translate (free)."""
+    if not text or not text.strip():
+        return ""
+    try:
+        return GoogleTranslator(source="en", target="ar").translate(text[:4900]) or text
+    except Exception as exc:
+        print(f"WARN: translation failed: {exc}", file=sys.stderr)
+        return text
 
 def translate_quest(text: str) -> str:
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -293,7 +304,17 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
-            news.append({"title": title, "url": item_url, "published_utc": published, "summary": contents[:190]})
+            title_ar = translate_text(title)
+            summary_en = contents[:190]
+            summary_ar = translate_text(summary_en) if summary_en else ""
+            news.append({
+                "title": title,
+                "title_ar": title_ar,
+                "url": item_url,
+                "published_utc": published,
+                "summary": summary_en,
+                "summary_ar": summary_ar
+            })
         if not news:
             raise ValueError("Steam news items did not contain usable headlines")
         changed = doc.get("news", []) != news
