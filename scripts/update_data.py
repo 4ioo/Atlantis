@@ -78,7 +78,6 @@ def split_text(text: str, max_len: int = 1500) -> list:
             if len(s) <= max_len:
                 current = s
             else:
-                # sentence itself too long, break by characters
                 for i in range(0, len(s), max_len):
                     part = s[i:i+max_len]
                     if i + max_len < len(s):
@@ -97,18 +96,21 @@ def translate_text(text: str) -> str:
     if not chunks:
         return text
     translated_parts = []
-    for chunk in chunks:
-        try:
-            result = GoogleTranslator(source="en", target="ar").translate(chunk)
-            if result:
-                translated_parts.append(result)
-                time.sleep(1.5)
-            else:
-                translated_parts.append(chunk)
-        except Exception as exc:
-            print(f"WARN: chunk translation failed: {exc}", file=sys.stderr)
+    for idx, chunk in enumerate(chunks):
+        success = False
+        for attempt in range(2):
+            try:
+                result = GoogleTranslator(source="en", target="ar").translate(chunk)
+                if result and result.strip():
+                    translated_parts.append(result)
+                    success = True
+                    break
+            except Exception as exc:
+                print(f"WARN: chunk {idx} attempt {attempt+1} failed: {exc}", file=sys.stderr)
+                time.sleep(2)
+        if not success:
             translated_parts.append(chunk)
-            time.sleep(3)
+        time.sleep(1.2)
     return " ".join(translated_parts)
 
 def translate_quest(text: str) -> str:
@@ -348,10 +350,25 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
             except (TypeError, ValueError, OSError):
                 pass
             old_item = old_by_url.get(item_url)
-            if old_item and old_item.get("title") == title and old_item.get("full_en") == contents:
+            # نستخدم الـ cache فقط إذا:
+            # 1) نفس URL
+            # 2) نفس العنوان
+            # 3) نفس النص الإنجليزي
+            # 4) الترجمة العربية موجودة (full_ar)
+            # 5) الترجمة العربية مختلفة عن الإنجليزية (يعني ترجمة حقيقية)
+            has_valid_ar = (old_item
+                            and old_item.get("full_ar")
+                            and old_item.get("full_ar").strip()
+                            and old_item.get("full_ar") != old_item.get("full_en"))
+            if (old_item
+                and old_item.get("title") == title
+                and old_item.get("full_en") == contents
+                and has_valid_ar):
                 news.append(old_item)
                 print(f"News kept from cache: {title[:50]}")
                 continue
+            # نحتاج ترجمة جديدة
+            print(f"Translating (chunks): {title[:60]}...")
             title_ar = translate_text(title)
             full_ar = translate_text(contents) if contents else ""
             news.append({
@@ -362,7 +379,7 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 "full_en": contents,
                 "full_ar": full_ar,
             })
-            print(f"Translated news: {title[:50]}...")
+            print(f"  Done: {title[:50]} -> {full_ar[:50]}...")
         if not news:
             raise ValueError("Steam news items did not contain usable headlines")
         changed = old_news != news
@@ -381,11 +398,15 @@ def main():
         try: doc=json.loads(DATA_FILE.read_text(encoding="utf-8"))
         except Exception: doc={}
     else: doc={}
-    # Force re-translation of news if stored translation equals English
+    # مسح الترجمات الفاشلة (full_ar == full_en) عشان نجبر إعادة الترجمة
     if doc.get("news"):
+        cleared = 0
         for n in doc["news"]:
-            if isinstance(n, dict) and n.get("full_ar") == n.get("full_en"):
-                n["full_ar"] = ""  # will be re-translated
+            if isinstance(n, dict) and n.get("full_ar") and n.get("full_ar") == n.get("full_en"):
+                n["full_ar"] = ""
+                cleared += 1
+        if cleared:
+            print(f"Cleared {cleared} stale translations")
     changed=False
     changed |= update_quests(doc,now)
     changed |= update_spirit(doc,now)
