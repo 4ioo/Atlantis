@@ -160,7 +160,6 @@
 const PT = 'America/Los_Angeles';
 const LOCAL_TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (_) { return 'UTC'; } })();
 const AR_LOCALE = 'ar-u-ca-gregory-nu-latn';
-const TRANSLATOR_URL = 'https://sky-translator.tyamo18.workers.dev';
 const $ = (id) => document.getElementById(id);
 const EVENT_DEFS = [
 {id:'geyser', name:'النافورة', icon:'♨️', desc:'جزر الملاذ · جمع الشمع', minute:5, hours:[0,2,4,6,8,10,12,14,16,18,20,22], duration:10},
@@ -358,20 +357,36 @@ $('timelineGrid').innerHTML=list.slice(0,9).map(item=>`<article class="timeline-
 }
 function hasArabic(text){return /[\u0600-\u06FF]/.test(text || '');}
 async function translateWithWorker(text) {
-if (!text || !text.trim()) return '';
-try {
-const res = await fetch(TRANSLATOR_URL, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ text: text.slice(0, 4500) })
-});
-if (!res.ok) throw new Error('Worker error ' + res.status);
-const data = await res.json();
-return data.translatedText || '';
-} catch (e) {
-console.error('Translation failed:', e);
-return '';
-}
+  if (!text || !text.trim()) return '';
+  const MAX = 1500;
+  const chunks = [];
+  let current = '';
+  for (const sentence of text.split(/(?<=[.!?\n])\s+/)) {
+    if ((current + ' ' + sentence).length <= MAX) {
+      current = current ? current + ' ' + sentence : sentence;
+    } else {
+      if (current) chunks.push(current);
+      current = sentence.slice(0, MAX);
+    }
+  }
+  if (current) chunks.push(current);
+
+  const results = [];
+  for (const chunk of chunks) {
+    try {
+      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=' + encodeURIComponent(chunk);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const translated = (data[0] || []).map(item => item[0] || '').join('');
+      results.push(translated || chunk);
+      await new Promise(r => setTimeout(r, 300));
+    } catch (e) {
+      console.error('Translation chunk failed:', e);
+      results.push(chunk);
+    }
+  }
+  return results.join(' ');
 }
 function renderNews(data){
 const list = Array.isArray(data?.news) ? data.news : [];
@@ -402,12 +417,10 @@ return;
 }
 full.style.display = 'block';
 if (toggle) toggle.textContent = 'إغلاق ▴';
-// إذا الترجمة مخزنة
 if (item.full_ar && hasArabic(item.full_ar) && item.full_ar.length > 100) {
 full.textContent = item.full_ar;
 return;
 }
-// ترجم الآن
 full.innerHTML = '<span class="loading-ring"></span> جارٍ الترجمة…';
 const src = item.full_en || item.summary_en || item.title || '';
 const translated = await translateWithWorker(src);
