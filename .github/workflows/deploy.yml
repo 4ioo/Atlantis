@@ -45,6 +45,7 @@ jobs:
           git add -A data/live.json assets
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh Sky data snapshot"
+            git pull --rebase origin main
             git push
           else
             echo "No data changes detected."
