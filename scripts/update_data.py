@@ -63,16 +63,24 @@ def get_pt_date(now_utc: dt.datetime) -> dt.date:
     return now_utc.astimezone(PT).date()
 
 def translate_text(text: str) -> str:
-    """Translate English text to Arabic using Google Translate (free)."""
     if not text or not text.strip():
         return ""
     try:
-        result = GoogleTranslator(source="en", target="ar").translate(text[:4900])
-        time.sleep(4)  # تأخير لتجنب تجاوز حد الطلبات
-        return result or text
+        return GoogleTranslator(source="en", target="ar").translate(text[:4900]) or text
     except Exception as exc:
         print(f"WARN: translation failed: {exc}", file=sys.stderr)
         return text
+
+def translate_batch(texts: list) -> list:
+    if not texts:
+        return []
+    cleaned = [t[:4900] if t else "" for t in texts]
+    try:
+        result = GoogleTranslator(source="en", target="ar").translate_batch(cleaned)
+        return result or cleaned
+    except Exception as exc:
+        print(f"WARN: batch translation failed: {exc}", file=sys.stderr)
+        return cleaned
 
 def translate_quest(text: str) -> str:
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -164,7 +172,6 @@ def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
     return changed
 
 def update_spirit(doc: dict, now_utc: dt.datetime) -> bool:
-    """Fetch the current traveling spirit from skygame-data (used by SkyHelper bot)."""
     url = "https://unpkg.com/skygame-data@latest/assets/everything.json"
     try:
         payload = fetch_json(url)
@@ -172,7 +179,6 @@ def update_spirit(doc: dict, now_utc: dt.datetime) -> bool:
         print(f"WARN: couldn't fetch skygame-data: {exc}", file=sys.stderr)
         return False
     now_pt = now_utc.astimezone(PT)
-    spirit = None
     candidates = []
     if isinstance(payload, dict):
         traveling = payload.get("travelingSpirits") or payload.get("traveling_spirits") or []
@@ -290,7 +296,7 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
         items = payload.get("appnews", {}).get("newsitems", [])
         if not isinstance(items, list) or not items:
             raise ValueError("Steam API returned no news items")
-        news = []
+        raw_items = []
         for item in items[:8]:
             title = html.unescape(str(item.get("title", "")).strip())
             item_url = str(item.get("url", "")).strip()
@@ -307,24 +313,36 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
-            title_ar = translate_text(title)
-            summary_en = contents[:190]
-            summary_ar = translate_text(summary_en) if summary_en else ""
-            news.append({
+            raw_items.append({
                 "title": title,
-                "title_ar": title_ar,
                 "url": item_url,
                 "published_utc": published,
-                "summary": summary_en,
-                "summary_ar": summary_ar
+                "summary": contents[:190],
             })
-        if not news:
+        if not raw_items:
             raise ValueError("Steam news items did not contain usable headlines")
+        batch = []
+        for r in raw_items:
+            batch.append(r["title"])
+            batch.append(r["summary"] or "")
+        translated = translate_batch(batch)
+        news = []
+        for i, r in enumerate(raw_items):
+            title_ar = translated[i*2] if i*2 < len(translated) else r["title"]
+            summary_ar = translated[i*2+1] if i*2+1 < len(translated) else r["summary"]
+            news.append({
+                "title": r["title"],
+                "title_ar": title_ar,
+                "url": r["url"],
+                "published_utc": r["published_utc"],
+                "summary": r["summary"],
+                "summary_ar": summary_ar,
+            })
         changed = doc.get("news", []) != news
         doc["news"] = news
         doc["news_source"] = "https://store.steampowered.com/news/app/2325290/"
         doc["news_updated_utc"] = now_utc.isoformat().replace("+00:00", "Z")
-        print(f"Official Steam announcements fetched: {len(news)} items")
+        print(f"Official Steam announcements fetched & translated: {len(news)} items")
         return changed
     except Exception as exc:
         print(f"WARN: couldn't refresh official Steam news: {exc}", file=sys.stderr)
