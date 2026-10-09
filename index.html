@@ -358,7 +358,7 @@ $('timelineGrid').innerHTML=list.slice(0,9).map(item=>`<article class="timeline-
 function hasArabic(text){return /[\u0600-\u06FF]/.test(text || '');}
 async function translateWithWorker(text) {
   if (!text || !text.trim()) return '';
-  const MAX = 1500;
+  const MAX = 480;
   const chunks = [];
   let current = '';
   for (const sentence of text.split(/(?<=[.!?\n])\s+/)) {
@@ -374,13 +374,17 @@ async function translateWithWorker(text) {
   const results = [];
   for (const chunk of chunks) {
     try {
-      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=' + encodeURIComponent(chunk);
+      const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(chunk) + '&langpair=en|ar';
       const res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      const translated = (data[0] || []).map(item => item[0] || '').join('');
-      results.push(translated || chunk);
-      await new Promise(r => setTimeout(r, 300));
+      const translated = data?.responseData?.translatedText || '';
+      if (translated && !/^MYMEMORY WARNING/i.test(translated)) {
+        results.push(translated);
+      } else {
+        results.push(chunk);
+      }
+      await new Promise(r => setTimeout(r, 500));
     } catch (e) {
       console.error('Translation chunk failed:', e);
       results.push(chunk);
