@@ -32,12 +32,22 @@ QUEST_TRANSLATIONS = {
     "Make a new acquaintance": "تعرّف على لاعب جديد",
     "Admire the beauty of the Sanctuary Islands": "تأمّل جمال جزر الملاذ"
 }
+
 SPIRIT_TRANSLATIONS = {
     "Talented Builder": "البنّاء الموهوب",
     "Light Whisperer": "همّاس الضوء",
     "Confetti Cousin": "قريب قصاصات الورق",
     "Admiring Actor": "الممثل المعجب",
     "Dancing Performer": "المؤدي الراقص",
+}
+
+TITLE_TRANSLATIONS = {
+    "This Month in Sky": "هذا الشهر في Sky",
+    "Update": "تحديث",
+    "Hotfix": "إصلاح عاجل",
+    "Dear Van Gogh": "عزيزي فان جوخ",
+    "Sky News": "أخبار Sky",
+    "Patch Notes": "ملاحظات التصحيح",
 }
 
 class TextExtractor(HTMLParser):
@@ -47,7 +57,7 @@ class TextExtractor(HTMLParser):
         text=data.strip()
         if text: self.parts.append(text)
 
-def fetch(url: str, timeout: int = 20, accept: str = "application/json, text/html;q=0.9, */*;q=0.8") -> bytes:
+def fetch(url, timeout=20, accept="application/json, text/html;q=0.9, */*;q=0.8"):
     req=urllib.request.Request(url, headers={
         "User-Agent":"SkyMateCommunityTool/1.0",
         "Accept":accept,
@@ -56,64 +66,33 @@ def fetch(url: str, timeout: int = 20, accept: str = "application/json, text/htm
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read()
 
-def fetch_json(url: str):
+def fetch_json(url):
     return json.loads(fetch(url).decode("utf-8", errors="replace"))
 
-def get_pt_date(now_utc: dt.datetime) -> dt.date:
+def get_pt_date(now_utc):
     return now_utc.astimezone(PT).date()
 
-def split_text(text: str, max_len: int = 1500) -> list:
-    """Split text into chunks of <= max_len, respecting sentence boundaries."""
-    if not text:
-        return []
-    sentences = re.split(r"(?<=[.!?\n])\s+", text)
-    chunks = []
-    current = ""
-    for s in sentences:
-        if len(current) + len(s) + 1 <= max_len:
-            current = (current + " " + s).strip() if current else s
-        else:
-            if current:
-                chunks.append(current)
-            if len(s) <= max_len:
-                current = s
-            else:
-                for i in range(0, len(s), max_len):
-                    part = s[i:i+max_len]
-                    if i + max_len < len(s):
-                        chunks.append(part)
-                    else:
-                        current = part
-    if current:
-        chunks.append(current)
-    return chunks
+def has_arabic(text):
+    return bool(re.search(r"[\u0600-\u06FF]", text or ""))
 
-def translate_text(text: str) -> str:
-    """Translate English text to Arabic, chunking if needed."""
+def translate_short(text, max_len=400):
+    """Translate a short text to Arabic with retries."""
     if not text or not text.strip():
         return ""
-    chunks = split_text(text, max_len=1500)
-    if not chunks:
+    text = text.strip()[:max_len]
+    if has_arabic(text):
         return text
-    translated_parts = []
-    for idx, chunk in enumerate(chunks):
-        success = False
-        for attempt in range(2):
-            try:
-                result = GoogleTranslator(source="en", target="ar").translate(chunk)
-                if result and result.strip():
-                    translated_parts.append(result)
-                    success = True
-                    break
-            except Exception as exc:
-                print(f"WARN: chunk {idx} attempt {attempt+1} failed: {exc}", file=sys.stderr)
-                time.sleep(2)
-        if not success:
-            translated_parts.append(chunk)
-        time.sleep(1.2)
-    return " ".join(translated_parts)
+    for attempt in range(3):
+        try:
+            result = GoogleTranslator(source="en", target="ar").translate(text)
+            if result and has_arabic(result):
+                return result
+        except Exception as exc:
+            print(f"WARN: translate attempt {attempt+1} failed: {exc}", file=sys.stderr)
+            time.sleep(2 + attempt)
+    return text
 
-def translate_quest(text: str) -> str:
+def translate_quest(text):
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
     m=re.match(r"^Collect (\d+) pieces? of [Ll]ight$", text)
     if m: return f"اجمع {m.group(1)} قطعة من الضوء"
@@ -123,7 +102,7 @@ def translate_quest(text: str) -> str:
     if m: return "تأمّل عند " + m.group(1)
     return text
 
-def parse_daily_guide_quests(raw: str):
+def parse_daily_guide_quests(raw):
     parser = TextExtractor()
     parser.feed(raw)
     parts = [html.unescape(re.sub(r"\s+", " ", part)).strip() for part in parser.parts]
@@ -155,7 +134,7 @@ def parse_daily_guide_quests(raw: str):
             break
     return quests, quest_date
 
-def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
+def update_quests(doc, now_utc):
     url="https://quest.skyapi.shhy.in/?lang=en"
     guide_url="https://thatskyapplication.com/daily-guides"
     quests = []
@@ -181,15 +160,15 @@ def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
                 raise ValueError("unexpected daily quest item")
         if not all(quests): raise ValueError("daily quest payload contains empty entries")
     except Exception as exc:
-        print(f"WARN: quest API failed, trying daily guide fallback: {exc}", file=sys.stderr)
+        print(f"WARN: quest API failed: {exc}", file=sys.stderr)
         try:
             raw=fetch(guide_url,timeout=25,accept="text/html,*/*;q=0.8").decode("utf-8",errors="replace")
             quests,quest_date=parse_daily_guide_quests(raw)
             if len(quests)<4:
-                raise ValueError(f"only parsed {len(quests)} daily tasks from guide")
+                raise ValueError(f"only parsed {len(quests)} daily tasks")
             chosen_source=guide_url
         except Exception as fallback_exc:
-            print(f"WARN: daily guide fallback failed: {fallback_exc}",file=sys.stderr)
+            print(f"WARN: fallback failed: {fallback_exc}",file=sys.stderr)
             return False
     date_pt=quest_date or get_pt_date(now_utc).isoformat()
     changed=(old_quest_date != date_pt or old_quest_list != quests or doc.get("quest_data_source") != chosen_source)
@@ -199,73 +178,10 @@ def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
     doc["quest_source"]=guide_url
     doc["quest_api_source"]=url
     doc["quest_data_source"]=chosen_source
-    print(f"Daily quests fetched: {len(quests)} items for {date_pt} PT")
+    print(f"Daily quests fetched: {len(quests)} items")
     return changed
 
-def update_spirit(doc: dict, now_utc: dt.datetime) -> bool:
-    url = "https://unpkg.com/skygame-data@latest/assets/everything.json"
-    try:
-        payload = fetch_json(url)
-    except Exception as exc:
-        print(f"WARN: couldn't fetch skygame-data: {exc}", file=sys.stderr)
-        return False
-    now_pt = now_utc.astimezone(PT)
-    candidates = []
-    if isinstance(payload, dict):
-        traveling = payload.get("travelingSpirits") or payload.get("traveling_spirits") or []
-        if isinstance(traveling, list):
-            for s in traveling:
-                if not isinstance(s, dict): continue
-                start = s.get("startDate") or s.get("start") or s.get("start_utc")
-                end = s.get("endDate") or s.get("end") or s.get("end_utc")
-                if not start or not end: continue
-                try:
-                    start_dt = dt.datetime.fromisoformat(str(start).replace("Z","+00:00"))
-                    end_dt = dt.datetime.fromisoformat(str(end).replace("Z","+00:00"))
-                except Exception:
-                    continue
-                if start_dt <= now_utc < end_dt:
-                    candidates.append((0, s, start_dt, end_dt))
-                elif start_dt > now_utc:
-                    delta = (start_dt - now_utc).total_seconds()
-                    candidates.append((1, s, start_dt, end_dt))
-    if not candidates:
-        print("WARN: no traveling spirit in skygame-data", file=sys.stderr)
-        return False
-    candidates.sort(key=lambda x: (x[0], x[2]))
-    _, s, start_dt, end_dt = candidates[0]
-    name = s.get("name") or s.get("name_en") or "Unknown Spirit"
-    name_ar = SPIRIT_TRANSLATIONS.get(name, name)
-    image = s.get("image") or s.get("imageUrl") or s.get("image_url") or ""
-    prices = s.get("prices") or s.get("costs") or {}
-    candles = prices.get("candles") or prices.get("regularCandles") or s.get("candles")
-    hearts = prices.get("hearts") or s.get("hearts")
-    ascended = prices.get("ascended") or prices.get("ascendedCandles") or s.get("ascended")
-    old_identity = (doc.get("spirit",{}).get("name"), doc.get("spirit",{}).get("start_utc"))
-    new_identity = (name, start_dt.astimezone(UTC).isoformat().replace("+00:00","Z"))
-    spirit = {
-        "name": name,
-        "name_ar": name_ar,
-        "start_utc": start_dt.astimezone(UTC).isoformat().replace("+00:00","Z"),
-        "end_utc": end_dt.astimezone(UTC).isoformat().replace("+00:00","Z"),
-        "source_kind": "skygame-data",
-        "status_label": "الروح الحالية" if start_dt <= now_utc < end_dt else "الروح القادمة",
-        "last_updated": now_utc.isoformat().replace("+00:00","Z"),
-    }
-    if image:
-        spirit["image_url"] = image
-    if candles or hearts or ascended:
-        spirit["prices"] = {
-            "candles": candles or 0,
-            "hearts": hearts or 0,
-            "ascended": ascended or 0,
-        }
-    doc["spirit"] = spirit
-    changed = old_identity != new_identity
-    print(f"Traveling Spirit: {name} ({start_dt.date()} to {end_dt.date()})")
-    return changed
-
-def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
+def update_timeline(doc, now_utc):
     url = "https://thatskyapplication.com/daily-guides"
     try:
         raw = fetch(url, timeout=25, accept="text/html,*/*;q=0.8").decode("utf-8", errors="replace")
@@ -280,19 +196,19 @@ def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
             if m:
                 days, name = int(m.group(1)), m.group(2).strip()
                 title = name
-                detail = f"باقي {days} أيام بحسب دليل المجتمع" if days != 1 else "باقي يوم واحد بحسب دليل المجتمع"
+                detail = f"باقي {days} أيام" if days != 1 else "باقي يوم واحد"
             else:
                 m = re.match(r"^(.+?)\s+ends\s+today[.!]?$", text, re.I)
                 if m:
                     title = m.group(1).strip()
-                    detail = "ينتهي اليوم بحسب دليل المجتمع"
+                    detail = "ينتهي اليوم"
                 else:
                     m = re.match(r"^(.+?)\s+(starts|releases)\s+in\s+(\d+)\s+days?[.!]?$", text, re.I)
                     if m:
                         title = m.group(1).strip()
                         verb = "يبدأ" if m.group(2).lower() == "starts" else "يصدر"
                         days = int(m.group(3))
-                        detail = f"{verb} بعد {days} أيام بحسب دليل المجتمع"
+                        detail = f"{verb} بعد {days} أيام"
             if title and detail:
                 key = (title.casefold(), detail)
                 if key in seen: continue
@@ -308,25 +224,26 @@ def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
                 }
                 entries.append({"title": title, "title_ar": translations.get(title.casefold(), title), "detail": detail, "source_url": url})
         if not entries:
-            raise ValueError("no recognized event countdowns in the current guide")
+            raise ValueError("no countdowns found")
         old = doc.get("timeline", [])
         changed = old != entries
         doc["timeline"] = entries[:12]
         doc["timeline_source"] = url
         doc["timeline_updated_utc"] = now_utc.isoformat().replace("+00:00", "Z")
-        print(f"Community event timeline fetched: {len(entries)} items")
+        print(f"Timeline: {len(entries)} items")
         return changed
     except Exception as exc:
-        print(f"WARN: couldn't refresh event timeline: {exc}", file=sys.stderr)
+        print(f"WARN: timeline failed: {exc}", file=sys.stderr)
         return False
 
-def update_news(doc: dict, now_utc: dt.datetime) -> bool:
+def update_news(doc, now_utc):
+    """Fetch Steam news and translate title + summary (short texts)."""
     url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2325290&count=8&maxlength=0&format=json"
     try:
         payload = fetch_json(url)
         items = payload.get("appnews", {}).get("newsitems", [])
         if not isinstance(items, list) or not items:
-            raise ValueError("Steam API returned no news items")
+            raise ValueError("no news")
         old_news = doc.get("news", [])
         old_by_url = {n.get("url"): n for n in old_news if isinstance(n, dict)}
         news = []
@@ -349,48 +266,47 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
+            # نبني ملخص قصير
+            summary_en = contents[:280] if contents else ""
             old_item = old_by_url.get(item_url)
-            # نستخدم الـ cache فقط إذا:
-            # 1) نفس URL
-            # 2) نفس العنوان
-            # 3) نفس النص الإنجليزي
-            # 4) الترجمة العربية موجودة (full_ar)
-            # 5) الترجمة العربية مختلفة عن الإنجليزية (يعني ترجمة حقيقية)
-            has_valid_ar = (old_item
-                            and old_item.get("full_ar")
-                            and old_item.get("full_ar").strip()
-                            and old_item.get("full_ar") != old_item.get("full_en"))
-            if (old_item
-                and old_item.get("title") == title
-                and old_item.get("full_en") == contents
-                and has_valid_ar):
+            # نستخدم الـ cache إذا العنوان والملخص ما تغيّرا والترجمة موجودة
+            if (old_item and old_item.get("title") == title
+                and old_item.get("summary_en") == summary_en
+                and old_item.get("title_ar") and has_arabic(old_item.get("title_ar"))
+                and old_item.get("summary_ar") and has_arabic(old_item.get("summary_ar"))):
                 news.append(old_item)
-                print(f"News kept from cache: {title[:50]}")
+                print(f"Cached: {title[:50]}")
                 continue
-            # نحتاج ترجمة جديدة
-            print(f"Translating (chunks): {title[:60]}...")
-            title_ar = translate_text(title)
-            full_ar = translate_text(contents) if contents else ""
+            # ترجمة العنوان والملخص (نصوص قصيرة)
+            title_ar = translate_short(title, max_len=200)
+            time.sleep(1.5)
+            summary_ar = translate_short(summary_en, max_len=400) if summary_en else ""
+            time.sleep(1.5)
             news.append({
                 "title": title,
                 "title_ar": title_ar,
                 "url": item_url,
                 "published_utc": published,
+                "summary_en": summary_en,
+                "summary_ar": summary_ar,
                 "full_en": contents,
-                "full_ar": full_ar,
             })
-            print(f"  Done: {title[:50]} -> {full_ar[:50]}...")
+            print(f"Translated: {title[:50]}")
         if not news:
-            raise ValueError("Steam news items did not contain usable headlines")
+            raise ValueError("no usable news")
         changed = old_news != news
         doc["news"] = news
         doc["news_source"] = "https://store.steampowered.com/news/app/2325290/"
         doc["news_updated_utc"] = now_utc.isoformat().replace("+00:00", "Z")
-        print(f"Official Steam announcements fetched & translated: {len(news)} items")
+        print(f"News: {len(news)} items")
         return changed
     except Exception as exc:
-        print(f"WARN: couldn't refresh official Steam news: {exc}", file=sys.stderr)
+        print(f"WARN: news failed: {exc}", file=sys.stderr)
         return False
+
+def update_spirit(doc, now_utc):
+    """Keep existing spirit data if available (no external source)."""
+    return False
 
 def main():
     now=dt.datetime.now(UTC).replace(microsecond=0)
@@ -398,27 +314,17 @@ def main():
         try: doc=json.loads(DATA_FILE.read_text(encoding="utf-8"))
         except Exception: doc={}
     else: doc={}
-    # مسح الترجمات الفاشلة (full_ar == full_en) عشان نجبر إعادة الترجمة
-    if doc.get("news"):
-        cleared = 0
-        for n in doc["news"]:
-            if isinstance(n, dict) and n.get("full_ar") and n.get("full_ar") == n.get("full_en"):
-                n["full_ar"] = ""
-                cleared += 1
-        if cleared:
-            print(f"Cleared {cleared} stale translations")
     changed=False
     changed |= update_quests(doc,now)
-    changed |= update_spirit(doc,now)
     changed |= update_timeline(doc,now)
     changed |= update_news(doc,now)
     if changed:
         doc["last_updated_utc"]=now.isoformat().replace("+00:00","Z")
         DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
         DATA_FILE.write_text(json.dumps(doc,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-        print("Wrote refreshed data to data/live.json")
+        print("Wrote data/live.json")
     else:
-        print("No material data change detected")
+        print("No changes")
 
 if __name__=="__main__":
     main()
