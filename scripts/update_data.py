@@ -62,16 +62,54 @@ def fetch_json(url: str):
 def get_pt_date(now_utc: dt.datetime) -> dt.date:
     return now_utc.astimezone(PT).date()
 
+def split_text(text: str, max_len: int = 1500) -> list:
+    """Split text into chunks of <= max_len, respecting sentence boundaries."""
+    if not text:
+        return []
+    sentences = re.split(r"(?<=[.!?\n])\s+", text)
+    chunks = []
+    current = ""
+    for s in sentences:
+        if len(current) + len(s) + 1 <= max_len:
+            current = (current + " " + s).strip() if current else s
+        else:
+            if current:
+                chunks.append(current)
+            if len(s) <= max_len:
+                current = s
+            else:
+                # sentence itself too long, break by characters
+                for i in range(0, len(s), max_len):
+                    part = s[i:i+max_len]
+                    if i + max_len < len(s):
+                        chunks.append(part)
+                    else:
+                        current = part
+    if current:
+        chunks.append(current)
+    return chunks
+
 def translate_text(text: str) -> str:
-    """Translate English text to Arabic using Google Translate (free)."""
+    """Translate English text to Arabic, chunking if needed."""
     if not text or not text.strip():
         return ""
-    try:
-        result = GoogleTranslator(source="en", target="ar").translate(text[:4900])
-        return result or text
-    except Exception as exc:
-        print(f"WARN: translation failed: {exc}", file=sys.stderr)
+    chunks = split_text(text, max_len=1500)
+    if not chunks:
         return text
+    translated_parts = []
+    for chunk in chunks:
+        try:
+            result = GoogleTranslator(source="en", target="ar").translate(chunk)
+            if result:
+                translated_parts.append(result)
+                time.sleep(1.5)
+            else:
+                translated_parts.append(chunk)
+        except Exception as exc:
+            print(f"WARN: chunk translation failed: {exc}", file=sys.stderr)
+            translated_parts.append(chunk)
+            time.sleep(3)
+    return " ".join(translated_parts)
 
 def translate_quest(text: str) -> str:
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -281,7 +319,6 @@ def update_timeline(doc: dict, now_utc: dt.datetime) -> bool:
         return False
 
 def update_news(doc: dict, now_utc: dt.datetime) -> bool:
-    """Fetch official Sky news from Steam, translate full content, and store."""
     url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=2325290&count=8&maxlength=0&format=json"
     try:
         payload = fetch_json(url)
@@ -310,13 +347,11 @@ def update_news(doc: dict, now_utc: dt.datetime) -> bool:
                 published = dt.datetime.fromtimestamp(int(item.get("date", 0)), UTC).isoformat().replace("+00:00", "Z")
             except (TypeError, ValueError, OSError):
                 pass
-            # تحقق إذا نفس الخبر محفوظ مسبقاً (نتجنب ترجمة ثانية)
             old_item = old_by_url.get(item_url)
             if old_item and old_item.get("title") == title and old_item.get("full_en") == contents:
                 news.append(old_item)
                 print(f"News kept from cache: {title[:50]}")
                 continue
-            # ترجمة العنوان والخبر الكامل
             title_ar = translate_text(title)
             full_ar = translate_text(contents) if contents else ""
             news.append({
@@ -346,6 +381,11 @@ def main():
         try: doc=json.loads(DATA_FILE.read_text(encoding="utf-8"))
         except Exception: doc={}
     else: doc={}
+    # Force re-translation of news if stored translation equals English
+    if doc.get("news"):
+        for n in doc["news"]:
+            if isinstance(n, dict) and n.get("full_ar") == n.get("full_en"):
+                n["full_ar"] = ""  # will be re-translated
     changed=False
     changed |= update_quests(doc,now)
     changed |= update_spirit(doc,now)
