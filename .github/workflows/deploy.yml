@@ -31,6 +31,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Python dependencies
+        run: pip install deep-translator
+
       - name: Update daily quests, spirit, events and news
         run: python scripts/update_data.py
 
