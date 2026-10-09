@@ -358,7 +358,12 @@ $('timelineGrid').innerHTML=list.slice(0,9).map(item=>`<article class="timeline-
 function renderNews(data){
 const list=Array.isArray(data?.news)?data.news:[];
 if(!list.length){$('newsGrid').innerHTML='<p class="empty-state">لم تصل الأخبار بعد.</p>';return;}
-$('newsGrid').innerHTML=list.slice(0,6).map(item=>{const date=item.published_utc?new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium'}).format(new Date(item.published_utc)):'تاريخ غير متوفر';return `<article class="news-card"><div class="news-title">${escapeHtml(item.title||'إعلان Sky')}</div><div class="news-date">${escapeHtml(date)} · إعلان رسمي</div>${item.summary?`<p>${escapeHtml(item.summary)}</p>`:''}</article>`}).join('');
+$('newsGrid').innerHTML=list.slice(0,6).map(item=>{
+const date=item.published_utc?new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium'}).format(new Date(item.published_utc)):'تاريخ غير متوفر';
+const title = item.title_ar || item.title || 'إعلان Sky';
+const summary = item.summary_ar || item.summary || '';
+return `<article class="news-card"><div class="news-title">${escapeHtml(title)}</div><div class="news-date">${escapeHtml(date)} · إعلان رسمي</div>${summary?`<p>${escapeHtml(summary)}</p>`:''}</article>`;
+}).join('');
 }
 function spiritTargetCost(){const p=liveData?.spirit?.prices;return Number(p?.candles??183);}
 function updateCandleCalculator(){
