@@ -6,6 +6,7 @@ import html
 import json
 import re
 import sys
+import time
 import urllib.request
 import urllib.parse
 from html.parser import HTMLParser
@@ -66,7 +67,9 @@ def translate_text(text: str) -> str:
     if not text or not text.strip():
         return ""
     try:
-        return GoogleTranslator(source="en", target="ar").translate(text[:4900]) or text
+        result = GoogleTranslator(source="en", target="ar").translate(text[:4900])
+        time.sleep(4)  # تأخير لتجنب تجاوز حد الطلبات
+        return result or text
     except Exception as exc:
         print(f"WARN: translation failed: {exc}", file=sys.stderr)
         return text
@@ -162,7 +165,7 @@ def update_quests(doc: dict, now_utc: dt.datetime) -> bool:
 
 def update_spirit(doc: dict, now_utc: dt.datetime) -> bool:
     """Fetch the current traveling spirit from skygame-data (used by SkyHelper bot)."""
-    url = "https://unpkg.com/skygame-data@latest/dist/everything.json"
+    url = "https://unpkg.com/skygame-data@latest/assets/everything.json"
     try:
         payload = fetch_json(url)
     except Exception as exc:
