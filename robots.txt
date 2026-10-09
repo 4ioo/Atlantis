@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://4ioo.github.io/-ATLANTIS/sitemap.xml
