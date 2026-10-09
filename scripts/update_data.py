@@ -339,6 +339,105 @@ def update_news(doc, now_utc):
         print(f"WARN: news failed: {exc}", file=sys.stderr)
         return False
 
+def calculate_spirit_prices(spirit_guid):
+    """Try to calculate spirit tree total prices from skygame-data."""
+    base = "https://unpkg.com/skygame-data@latest/assets"
+    result = None
+    try:
+        trees_data = fetch_json(f"{base}/spirit-trees.json")
+        nodes_data = fetch_json(f"{base}/nodes.json")
+    except Exception as exc:
+        print(f"WARN: couldn't fetch tree data: {exc}", file=sys.stderr)
+        return None
+
+    nodes_map = {}
+    for n in nodes_data.get("items", []):
+        if not isinstance(n, dict):
+            continue
+        g = n.get("guid") or n.get("id")
+        if g:
+            nodes_map[g] = n
+
+    trees_items = trees_data.get("items", []) if isinstance(trees_data, dict) else []
+    tree = None
+    for t in trees_items:
+        if not isinstance(t, dict):
+            continue
+        if t.get("spirit") == spirit_guid or t.get("guid") == spirit_guid or t.get("spiritId") == spirit_guid:
+            tree = t
+            break
+
+    if not tree:
+        print(f"WARN: no tree found for spirit {spirit_guid}", file=sys.stderr)
+        return None
+
+    total_candles = 0
+    total_hearts = 0
+    total_ascended = 0
+    cosmetics = []
+
+    tree_nodes = tree.get("nodes") or tree.get("node") or tree.get("tree") or []
+    if isinstance(tree_nodes, str):
+        tree_nodes = [tree_nodes]
+
+    for ref in tree_nodes:
+        node = None
+        if isinstance(ref, str):
+            node = nodes_map.get(ref)
+        elif isinstance(ref, dict):
+            node = ref
+        if not node:
+            continue
+
+        cost = node.get("cost") or node.get("price") or {}
+        c = h = a = 0
+        if isinstance(cost, int):
+            c = cost
+        elif isinstance(cost, dict):
+            for k, v in cost.items():
+                if not isinstance(v, (int, float)):
+                    continue
+                kl = k.lower()
+                if "heart" in kl:
+                    h += int(v)
+                elif "ascend" in kl or "wing" in kl:
+                    a += int(v)
+                else:
+                    c += int(v)
+
+        total_candles += c
+        total_hearts += h
+        total_ascended += a
+
+        name_en = node.get("name") or node.get("name_en") or ""
+        if name_en and (c or h or a):
+            currency = "candle"
+            amount = c
+            if h:
+                currency = "heart"
+                amount = h
+            elif a:
+                currency = "ascended"
+                amount = a
+            cosmetics.append({
+                "name": name_en,
+                "name_ar": name_en,
+                "cost": amount,
+                "currency": currency,
+            })
+
+    if total_candles or total_hearts or total_ascended:
+        result = {
+            "prices": {
+                "candles": total_candles,
+                "hearts": total_hearts,
+                "ascended": total_ascended,
+            },
+            "cosmetics": cosmetics[:10],
+        }
+        print(f"Spirit prices: {total_candles} candles, {total_hearts} hearts, {total_ascended} ascended ({len(cosmetics)} items)")
+    return result
+
 def update_spirit(doc, now_utc):
     """Fetch current traveling spirit from skygame-data assets."""
     base = "https://unpkg.com/skygame-data@latest/assets"
@@ -431,9 +530,24 @@ def update_spirit(doc, now_utc):
     if image_url:
         spirit["image_url"] = image_url
 
+    # حساب التكاليف تلقائيًا
+    prices_info = None
+    if spirit_guid:
+        try:
+            prices_info = calculate_spirit_prices(spirit_guid)
+        except Exception as exc:
+            print(f"WARN: price calc failed: {exc}", file=sys.stderr)
+
+    if prices_info:
+        spirit["prices"] = prices_info["prices"]
+        if prices_info.get("cosmetics"):
+            spirit["cosmetics"] = prices_info["cosmetics"]
+        spirit["prices_note"] = "التكاليف محسوبة تلقائيًا من شجرة الروح في بيانات المجتمع. قد تختلف التفاصيل قليلًا."
+
+    # نقل البيانات القديمة (لنفس الروح) إذا لم نحصل على قيم جديدة
     if old_spirit.get("name") == spirit_name:
         for key in ("prices", "cosmetics", "prices_note", "location_ar", "image_path"):
-            if old_spirit.get(key):
+            if old_spirit.get(key) and key not in spirit:
                 spirit[key] = old_spirit[key]
 
     doc["spirit"] = spirit
