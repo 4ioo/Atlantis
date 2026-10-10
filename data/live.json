@@ -19,36 +19,30 @@
     {
       "title": "Radiance",
       "title_ar": "حدث الإشعاع",
-      "detail": "باقي 6 أيام",
-      "source_url": "https://thatskyapplication.com/daily-guides"
-    },
-    {
-      "title": "Days of Moonlight",
-      "title_ar": "أيام ضوء القمر",
-      "detail": "ينتهي اليوم",
+      "detail": "باقي 5 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "The 35.0 update",
       "title_ar": "تحديث 35.0",
-      "detail": "يصدر بعد 4 أيام",
+      "detail": "يصدر بعد 3 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "The new season",
       "title_ar": "الموسم الجديد",
-      "detail": "يبدأ بعد 7 أيام",
+      "detail": "يبدأ بعد 6 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Days of Mischief",
       "title_ar": "أيام الشقاوة",
-      "detail": "يبدأ بعد 14 أيام",
+      "detail": "يبدأ بعد 13 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-10-09T20:16:10Z",
+  "timeline_updated_utc": "2026-10-10T07:18:46Z",
   "news": [
     {
       "title": "This Month in Sky: October 2026 Edition",
@@ -124,8 +118,8 @@
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-10-09T20:16:10Z",
-  "last_updated_utc": "2026-10-09T20:16:10Z",
+  "news_updated_utc": "2026-10-10T07:18:46Z",
+  "last_updated_utc": "2026-10-10T07:18:46Z",
   "spirit": {
     "name": "Talented Builder",
     "name_ar": "البنّاء الموهوب",
@@ -134,7 +128,7 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح الحالية",
-    "last_updated": "2026-10-09T20:16:10Z",
+    "last_updated": "2026-10-10T07:18:46Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/ac/Flight-Spirit-Talented-Builder.png"
   }
 }
