@@ -170,6 +170,104 @@ MAIN_LOCATIONS = [
     "Eye of Eden",
 ]
 
+
+# ===== الشظية المتحطمة (Shattering Shard) =====
+
+REALM_NAMES_AR = {
+    "prairie":   "المرج",
+    "forest":    "الغابة",
+    "valley":    "الوادي",
+    "wasteland": "الأرض القاحلة",
+    "vault":     "قبو المعرفة",
+}
+
+MAP_NAMES_AR = {
+    "prairie.butterfly": "حقل الفراشات",
+    "prairie.village":   "جزر القرية",
+    "prairie.cave":      "الكهف",
+    "prairie.bird":      "عش الطيور",
+    "prairie.island":    "جزيرة الملاذ",
+    "forest.brook":      "جدول الغابة",
+    "forest.boneyard":   "مقبرة العظام",
+    "forest.end":        "حديقة الغابة",
+    "forest.tree":       "بيت الشجرة",
+    "forest.sunny":      "المقاصة المرتفعة",
+    "valley.rink":       "حلبة الجليد",
+    "valley.dreams":     "قرية الأحلام",
+    "valley.hermit":     "وادي الناسك",
+    "wasteland.temple":      "المعبد المحطم",
+    "wasteland.battlefield": "ساحة المعركة",
+    "wasteland.graveyard":   "المقبرة",
+    "wasteland.crab":        "حقل السلطعون",
+    "wasteland.ark":         "السفينة المنسية",
+    "vault.starlight":   "صحراء ضوء النجوم",
+    "vault.jelly":       "خليج قنديل البحر",
+}
+
+LAND_OFFSET = dt.timedelta(minutes=8, seconds=40)
+END_OFFSET  = dt.timedelta(hours=4)
+BLACK_SHARD_INTERVAL = dt.timedelta(hours=8)
+RED_SHARD_INTERVAL   = dt.timedelta(hours=6)
+
+SHARDS_INFO = [
+    {  # مجموعة 0 — سوداء
+        "no_shard_wk_day": [6, 7],
+        "interval": BLACK_SHARD_INTERVAL,
+        "offset": dt.timedelta(hours=1, minutes=50),
+        "maps": ["prairie.butterfly", "forest.brook", "valley.rink",
+                 "wasteland.temple", "vault.starlight"],
+    },
+    {  # مجموعة 1 — سوداء
+        "no_shard_wk_day": [7, 1],
+        "interval": BLACK_SHARD_INTERVAL,
+        "offset": dt.timedelta(hours=2, minutes=10),
+        "maps": ["prairie.village", "forest.boneyard", "valley.rink",
+                 "wasteland.battlefield", "vault.starlight"],
+    },
+    {  # مجموعة 2 — حمراء
+        "no_shard_wk_day": [1, 2],
+        "interval": RED_SHARD_INTERVAL,
+        "offset": dt.timedelta(hours=7, minutes=40),
+        "maps": ["prairie.cave", "forest.end", "valley.dreams",
+                 "wasteland.graveyard", "vault.jelly"],
+        "def_reward_ac": 2,
+    },
+    {  # مجموعة 3 — حمراء
+        "no_shard_wk_day": [2, 3],
+        "interval": RED_SHARD_INTERVAL,
+        "offset": dt.timedelta(hours=2, minutes=20),
+        "maps": ["prairie.bird", "forest.tree", "valley.dreams",
+                 "wasteland.crab", "vault.jelly"],
+        "def_reward_ac": 2.5,
+    },
+    {  # مجموعة 4 — حمراء
+        "no_shard_wk_day": [3, 4],
+        "interval": RED_SHARD_INTERVAL,
+        "offset": dt.timedelta(hours=3, minutes=30),
+        "maps": ["prairie.island", "forest.sunny", "valley.hermit",
+                 "wasteland.ark", "vault.jelly"],
+        "def_reward_ac": 3.5,
+    },
+]
+
+OVERRIDE_REWARD_AC = {
+    "forest.end":    2.5,
+    "valley.dreams": 2.5,
+    "forest.tree":   3.5,
+    "vault.jelly":   3.5,
+}
+
+NUM_MAP_VARIANTS = {
+    "prairie.butterfly": 3, "prairie.village": 3, "prairie.bird": 2,
+    "prairie.island": 3,
+    "forest.brook": 2, "forest.end": 2,
+    "valley.rink": 3, "valley.dreams": 2,
+    "wasteland.temple": 3, "wasteland.battlefield": 3,
+    "wasteland.graveyard": 2, "wasteland.crab": 2, "wasteland.ark": 4,
+    "vault.starlight": 3, "vault.jelly": 2,
+}
+
+
 class TextExtractor(HTMLParser):
     def __init__(self):
         super().__init__(); self.parts=[]
@@ -221,16 +319,12 @@ def clean_english_words(text):
     """Replace remaining English small words with Arabic."""
     if not text:
         return text
-    # رتب الكلمات من الأطول للأقصر (عشان "koi pond" تجي قبل "pond")
     for en in sorted(EXTRA_WORDS.keys(), key=len, reverse=True):
         ar = EXTRA_WORDS[en]
         if ar:
-            # استبدل الكلمة ككلمة كاملة فقط
             text = re.sub(r"\b" + re.escape(en) + r"\b", ar, text, flags=re.IGNORECASE)
         else:
-            # احذف الكلمة (مثل "the"، "of")
             text = re.sub(r"\b" + re.escape(en) + r"\b\s*", "", text, flags=re.IGNORECASE)
-    # نظّف المسافات المتعددة
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
@@ -373,7 +467,6 @@ def update_quests(doc, now_utc):
     date_pt=quest_date or get_pt_date(now_utc).isoformat()
     old_ar = doc.get("daily_quests_ar", [])
     old_locs = doc.get("daily_quests_locations", [])
-    # نتحقق إذا فيه خلط (حروف إنجليزية مدموجة مع العربي)
     def _has_mixed(items):
         for a in items or []:
             if not a:
@@ -728,6 +821,92 @@ def update_spirit(doc, now_utc):
     print(f"Traveling Spirit: {spirit_name} ({start_dt.date()} to {end_dt.date()})")
     return changed
 
+
+# ===== الشظية المتحطمة: الحساب والتحديث =====
+
+def get_shard_info(now_utc: dt.datetime) -> dict:
+    """حساب معلومات الشظية المتحطمة لتاريخ محدد (بتوقيت المحيط الهادئ)."""
+    now_pt = now_utc.astimezone(PT)
+    today = now_pt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    day_of_month = today.day
+    day_of_week = today.isoweekday()  # 1 = Monday, 7 = Sunday
+
+    is_red = day_of_month % 2 == 1
+    realm_idx = (day_of_month - 1) % 5
+
+    if day_of_month % 2 == 1:
+        info_index = (((day_of_month - 1) // 2) % 3) + 2
+    else:
+        info_index = (day_of_month // 2) % 2
+
+    config = SHARDS_INFO[info_index]
+    has_shard = day_of_week not in config["no_shard_wk_day"]
+    map_key = config["maps"][realm_idx]
+
+    reward_ac = None
+    if is_red:
+        reward_ac = OVERRIDE_REWARD_AC.get(map_key, config.get("def_reward_ac"))
+
+    num_variant = NUM_MAP_VARIANTS.get(map_key, 1)
+
+    first_start = today + config["offset"]
+
+    if day_of_week == 7 and today.dst() != first_start.dst():
+        delta = dt.timedelta(hours=-1 if first_start.dst() else 1)
+        first_start = first_start + delta
+
+    occurrences = []
+    for i in range(3):
+        start = first_start + config["interval"] * i
+        land = start + LAND_OFFSET
+        end = start + END_OFFSET
+        occurrences.append({"start": start, "land": land, "end": end})
+
+    def to_utc_iso(dt_pt: dt.datetime) -> str:
+        return dt_pt.astimezone(UTC).isoformat().replace("+00:00", "Z")
+
+    return {
+        "date": today.isoformat(),
+        "is_red": is_red,
+        "has_shard": has_shard,
+        "realm": config["maps"][realm_idx].split(".")[0],
+        "realm_ar": REALM_NAMES_AR.get(config["maps"][realm_idx].split(".")[0], ""),
+        "map": map_key,
+        "map_ar": MAP_NAMES_AR.get(map_key, map_key),
+        "reward_ac": reward_ac,
+        "num_variant": num_variant,
+        "occurrences": [
+            {
+                "start_utc": to_utc_iso(occ["start"]),
+                "land_utc": to_utc_iso(occ["land"]),
+                "end_utc": to_utc_iso(occ["end"]),
+            }
+            for occ in occurrences
+        ],
+        "last_end_utc": to_utc_iso(occurrences[-1]["end"]),
+    }
+
+
+def update_shards(doc: dict, now_utc: dt.datetime) -> bool:
+    """تحديث بيانات الشظية المتحطمة في live.json."""
+    try:
+        shard_info = get_shard_info(now_utc)
+        old_shard = doc.get("shard")
+        changed = old_shard != shard_info
+        doc["shard"] = shard_info
+        print(
+            f"Shard: realm={shard_info['realm_ar']}, "
+            f"map={shard_info['map_ar']}, "
+            f"is_red={shard_info['is_red']}, "
+            f"has_shard={shard_info['has_shard']}"
+        )
+        return changed
+    except Exception as exc:
+        print(f"WARN: shard calculation failed: {exc}", file=sys.stderr)
+        return False
+
+
 def main():
     now=dt.datetime.now(UTC).replace(microsecond=0)
     if DATA_FILE.exists():
@@ -739,6 +918,7 @@ def main():
     changed |= update_spirit(doc,now)
     changed |= update_timeline(doc,now)
     changed |= update_news(doc,now)
+    changed |= update_shards(doc, now)
     if changed:
         doc["last_updated_utc"]=now.isoformat().replace("+00:00","Z")
         DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
