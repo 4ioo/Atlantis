@@ -17,10 +17,6 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
-/* =========================================================
-   SAMA · SKY MATE v2 — "Golden Hour Observatory"
-   سماء الغروب: ليل نيلي يلتقي بأفق ذهبي، زجاج ناعم، بنتو جريد
-   ========================================================= */
 :root{
   color-scheme:dark;
   --ink:#060914;
@@ -909,7 +905,7 @@ loading.style.display = 'block';
 content.style.display = 'none';
 badge.textContent = 'بانتظار البيانات';
 if (schedule) schedule.innerHTML = '';
-const oldImg = $('shardMapImage'); if (oldImg) oldImg.remove();
+const oldImg0 = $('shardMapImage'); if (oldImg0) oldImg0.remove();
 return;
 }
 loading.style.display = 'none';
@@ -926,7 +922,7 @@ $('shardMap').textContent = s.map_ar || s.map || '—';
 $('shardColor').textContent = s.has_shard ? (s.is_red ? 'أحمر' : 'أسود') : '—';
 $('shardReward').textContent = (s.has_shard && s.reward_ac != null) ? `${s.reward_ac} شمعة` : '—';
 
-// ===== صورة الخريطة (جديد) =====
+// ===== صورة الخريطة =====
 const oldImg = $('shardMapImage');
 if (oldImg) oldImg.remove();
 if (s.has_shard && s.image_url) {
@@ -936,7 +932,7 @@ img.src = s.image_url;
 img.alt = s.map_ar || s.map || 'خريطة الشظية';
 img.loading = 'lazy';
 img.referrerPolicy = 'no-referrer';
-img.style.cssText = 'display:block;width:100%;max-height:460px;object-fit:contain;border-radius:16px;margin-top:14px;border:1px solid var(--line);background:#0a0e24';
+img.style.cssText = 'display:block;width:100%;max-height:460px;object-fit:contain;border-radius:16px;margin-top:14px;border:1px solid var(--line);background:#0a0e24;clip-path:inset(0 0 5% 0 round 16px)';
 img.addEventListener('error', () => { img.remove(); }, {once:true});
 content.insertBefore(img, schedule);
 }
