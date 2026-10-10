@@ -204,6 +204,9 @@ MAP_NAMES_AR = {
     "vault.jelly":       "خليج قنديل البحر",
 }
 
+# قالب رابط صور الخرائط
+SHARD_MAP_IMAGE_BASE = "https://sky-shards.pages.dev/infographics/map_varient_clement/"
+
 LAND_OFFSET = dt.timedelta(minutes=8, seconds=40)
 END_OFFSET  = dt.timedelta(hours=4)
 BLACK_SHARD_INTERVAL = dt.timedelta(hours=8)
@@ -866,6 +869,24 @@ def get_shard_info(now_utc: dt.datetime) -> dict:
     def to_utc_iso(dt_pt: dt.datetime) -> str:
         return dt_pt.astimezone(UTC).isoformat().replace("+00:00", "Z")
 
+    # ===== اختيار أول صورة موجودة من sky-shards =====
+    image_url = None
+    if has_shard:
+        for v in range(1, num_variant + 1):
+            candidate = f"{SHARD_MAP_IMAGE_BASE}{map_key}.{v}.webp"
+            try:
+                req = urllib.request.Request(
+                    candidate,
+                    method="HEAD",
+                    headers={"User-Agent": "SkyMateCommunityTool/1.0"},
+                )
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    if resp.status == 200:
+                        image_url = candidate
+                        break
+            except Exception:
+                continue
+
     return {
         "date": today.isoformat(),
         "is_red": is_red,
@@ -876,6 +897,7 @@ def get_shard_info(now_utc: dt.datetime) -> dict:
         "map_ar": MAP_NAMES_AR.get(map_key, map_key),
         "reward_ac": reward_ac,
         "num_variant": num_variant,
+        "image_url": image_url,
         "occurrences": [
             {
                 "start_utc": to_utc_iso(occ["start"]),
@@ -899,7 +921,8 @@ def update_shards(doc: dict, now_utc: dt.datetime) -> bool:
             f"Shard: realm={shard_info['realm_ar']}, "
             f"map={shard_info['map_ar']}, "
             f"is_red={shard_info['is_red']}, "
-            f"has_shard={shard_info['has_shard']}"
+            f"has_shard={shard_info['has_shard']}, "
+            f"image={'✓' if shard_info.get('image_url') else '—'}"
         )
         return changed
     except Exception as exc:
