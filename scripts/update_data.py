@@ -116,6 +116,41 @@ PLACE_TRANSLATIONS = {
     "Meditating Monastic": "الراهب المتأمل",
 }
 
+# كلمات إنجليزية صغيرة نشيلها من الترجمة
+EXTRA_WORDS = {
+    "outside": "خارج",
+    "inside": "داخل",
+    "near": "قرب",
+    "beside": "بجانب",
+    "koi pond": "بركة كوي",
+    "pond": "بركة",
+    "lake": "بحيرة",
+    "river": "نهر",
+    "tree": "شجرة",
+    "rock": "صخرة",
+    "cave": "كهف",
+    "area": "منطقة",
+    "zone": "منطقة",
+    "top": "أعلى",
+    "bottom": "أسفل",
+    "upper": "العلوي",
+    "lower": "السفلي",
+    "the": "",
+    "a": "",
+    "an": "",
+    "of": "",
+    "in": "في",
+    "at": "عند",
+    "by": "عند",
+    "on": "على",
+    "and": "و",
+    "or": "أو",
+    "with": "مع",
+    "to": "إلى",
+    "from": "من",
+    "for": "لـ",
+}
+
 # أسماء الأماكن الرئيسية (للتعرف عليها واستخراجها)
 MAIN_LOCATIONS = [
     "Vault of Knowledge",
@@ -182,24 +217,43 @@ def translate_places(text):
         text = text.replace(en, ar)
     return text
 
+def clean_english_words(text):
+    """Replace remaining English small words with Arabic."""
+    if not text:
+        return text
+    # رتب الكلمات من الأطول للأقصر (عشان "koi pond" تجي قبل "pond")
+    for en in sorted(EXTRA_WORDS.keys(), key=len, reverse=True):
+        ar = EXTRA_WORDS[en]
+        if ar:
+            # استبدل الكلمة ككلمة كاملة فقط
+            text = re.sub(r"\b" + re.escape(en) + r"\b", ar, text, flags=re.IGNORECASE)
+        else:
+            # احذف الكلمة (مثل "the"، "of")
+            text = re.sub(r"\b" + re.escape(en) + r"\b\s*", "", text, flags=re.IGNORECASE)
+    # نظّف المسافات المتعددة
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
 def translate_phrase(text):
     """Translate a full phrase via Google, then fix place names."""
     if not text:
         return ""
     if has_arabic(text):
-        return translate_places(text)
+        result = translate_places(text)
+        result = clean_english_words(result)
+        return result
     translated = translate_short(text, max_len=300)
-    return translate_places(translated)
+    result = translate_places(translated)
+    result = clean_english_words(result)
+    return result
 
 def extract_location(text):
     """Extract the location name in English from a quest text."""
     if not text:
         return ""
-    # ابحث عن اسم مكان رئيسي معروف داخل النص
     for place in MAIN_LOCATIONS:
         if place in text:
             return place
-    # لو ما لقينا مكان رئيسي، نحاول نلقط الأنماط الشائعة
     m = re.search(r"\bin\s+(?:the\s+)?([A-Z][A-Za-z' ]+(?:Village|Temple|Prairie|Forest|Islands|Vault|Wasteland|Valley|Cave|Ark|Desert|Eden))", text)
     if m:
         return m.group(1).strip()
@@ -318,7 +372,18 @@ def update_quests(doc, now_utc):
             return False
     date_pt=quest_date or get_pt_date(now_utc).isoformat()
     old_ar = doc.get("daily_quests_ar", [])
-    needs_retranslate = (not old_ar) or any(not has_arabic(a) for a in old_ar if a)
+    old_locs = doc.get("daily_quests_locations", [])
+    # نتحقق إذا فيه خلط (حروف إنجليزية مدموجة مع العربي)
+    def _has_mixed(items):
+        for a in items or []:
+            if not a:
+                continue
+            if not has_arabic(a):
+                return True
+            if re.search(r"[A-Za-z]{2,}", a):
+                return True
+        return False
+    needs_retranslate = (not old_ar) or _has_mixed(old_ar) or (len(old_locs) != len(quests))
     changed=(old_quest_date != date_pt or old_quest_list != quests or doc.get("quest_data_source") != chosen_source or needs_retranslate)
     doc["daily_quests_date_pacific"]=date_pt
     doc["daily_quests_en"]=quests
