@@ -932,7 +932,7 @@ img.src = s.image_url;
 img.alt = s.map_ar || s.map || 'خريطة الشظية';
 img.loading = 'lazy';
 img.referrerPolicy = 'no-referrer';
-img.style.cssText = 'display:block;width:100%;max-height:460px;object-fit:contain;border-radius:16px;margin-top:14px;border:1px solid var(--line);background:#0a0e24;clip-path:inset(0 0 5% 0 round 16px)';
+img.style.cssText = 'display:block;width:100%;max-height:460px;object-fit:contain;border-radius:16px;margin-top:14px;border:1px solid var(--line);background:#0a0e24;clip-path:inset(5% 0 6% 0 round 16px)';
 img.addEventListener('error', () => { img.remove(); }, {once:true});
 content.insertBefore(img, schedule);
 }
