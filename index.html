@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b0f19">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070a14">
 <meta name="description" content="رفيق عربي للاعبي Sky: Children of the Light">
 <title>سماء — رفيقك اليومي في Sky</title>
 <meta property="og:title" content="سماء — رفيقك اليومي في Sky">
@@ -14,511 +14,520 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
+/* =========================================================
+   SAMA · SKY MATE v2 — "Golden Hour Observatory"
+   سماء الغروب: ليل نيلي يلتقي بأفق ذهبي، زجاج ناعم، بنتو جريد
+   ========================================================= */
 :root{
   color-scheme:dark;
-  --bg:#070b12;
-  --panel:rgba(15, 23, 42, 0.7);
-  --line:rgba(255, 255, 255, 0.08);
-  --text:#f1f5f9;
-  --muted:#94a3b8;
-  --mint:#38bdf8; /* تم تحسين التوهج ليصبح أزرق سماوي/مينت فخم */
-  --mint-glow: rgba(56, 189, 248, 0.25);
-  --gold:#f4cf83;
-  --shadow:0 12px 40px rgba(0, 0, 0, 0.4);
+  --ink:#060914;
+  --night:#0b1128;
+  --dusk:#1b1745;
+  --glass:rgba(17,22,48,.58);
+  --glass-2:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.09);
+  --line-2:rgba(255,255,255,.18);
+  --text:#f5f3ff;
+  --muted:#9aa3c4;
+  --dim:#6b7599;
+  --sun:#ffd48a;
+  --amber:#ffb86b;
+  --rose:#ff8f9c;
+  --sky:#82d9ff;
+  --lav:#b9a9ff;
+  --ok:#5eead4;
+  --sunset:linear-gradient(135deg,#ffe3a8 0%,#ffb86b 45%,#ff8f9c 100%);
+  --aurora:linear-gradient(135deg,#82d9ff 0%,#b9a9ff 55%,#ff9ed2 100%);
+  --r-lg:26px;--r-md:18px;--r-sm:13px;
+  --f-head:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-num:Manrope,"Readex Pro",sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
 }
-
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
 body{
-  margin:0;
-  background-color: var(--bg);
-  /* خلفية متوهجة حديثة (Mesh Gradients) */
-  background-image: 
-    radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(88, 101, 242, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 1) 0%, #070b12 100%);
-  color:var(--text);
-  font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
-  line-height:1.6;
-  min-height:100vh;
-  position: relative;
-  overflow-x: hidden;
+  margin:0;min-height:100vh;
+  background:var(--ink);color:var(--text);
+  font-family:var(--f-body);line-height:1.7;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  padding-top:var(--safe-t);
 }
-
-/* خلفية متوهجة متحركة خفيفة */
-body::before {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.05) 0%, transparent 70%);
-  z-index: -1;
-  pointer-events: none;
-  filter: blur(80px);
+/* السماء: نيلي عميق → بنفسجي → أفق ذهبي */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:
+    radial-gradient(130% 55% at 50% 118%,rgba(255,163,102,.42),rgba(255,120,130,.18) 45%,transparent 70%),
+    radial-gradient(60% 40% at 88% 0%,rgba(130,217,255,.13),transparent 70%),
+    radial-gradient(55% 45% at 6% 28%,rgba(185,169,255,.16),transparent 70%),
+    linear-gradient(180deg,#050813 0%,#0a1030 38%,#1b1745 72%,#3a2253 100%);
 }
+/* نجوم + حبيبات */
+body::after{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.8;
+  background-image:
+    radial-gradient(1.2px 1.2px at 8% 14%,#fff,transparent 60%),
+    radial-gradient(1px 1px at 19% 61%,rgba(255,255,255,.7),transparent 60%),
+    radial-gradient(1.5px 1.5px at 31% 26%,#cfe9ff,transparent 60%),
+    radial-gradient(1px 1px at 43% 78%,rgba(255,255,255,.6),transparent 60%),
+    radial-gradient(1.3px 1.3px at 55% 9%,#fff,transparent 60%),
+    radial-gradient(1px 1px at 66% 47%,rgba(255,235,200,.8),transparent 60%),
+    radial-gradient(1.2px 1.2px at 77% 70%,rgba(255,255,255,.65),transparent 60%),
+    radial-gradient(1.4px 1.4px at 89% 31%,#fff,transparent 60%),
+    radial-gradient(1px 1px at 95% 88%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(1px 1px at 3% 84%,rgba(255,255,255,.5),transparent 60%);
+  background-size:560px 560px;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 95%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 95%);
+  animation:twinkle 8s ease-in-out infinite alternate;
+}
+@keyframes twinkle{from{opacity:.5}to{opacity:.95}}
+a{color:var(--sky);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+::selection{background:rgba(255,184,107,.4)}
+.skip{position:absolute;inset-inline-start:12px;top:-60px;background:var(--sun);color:#1b1130;padding:8px 14px;border-radius:10px;z-index:100;font-weight:700}
+.skip:focus{top:10px}
 
-a{color:var(--mint);text-decoration:none;transition: color 0.2s}
-a:hover{text-decoration:underline;color: #7dd3fc}
+.app{padding-bottom:calc(104px + var(--safe-b))}
+.shell{width:min(1240px,calc(100% - 28px));margin-inline:auto}
 
-button{font:inherit;cursor:pointer}
-button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-
-.shell{width:min(1180px,calc(100% - 32px));margin-inline:auto}
-
+/* ---------- الشريط العلوي ---------- */
 .topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:22px 0 20px;
-  border-bottom:1px solid var(--line);
-  backdrop-filter: blur(10px);
+  position:sticky;top:max(10px,var(--safe-t));z-index:30;margin-top:10px;
+  display:flex;align-items:center;gap:12px;
+  padding:9px 10px 9px 12px;border-radius:20px;
+  background:rgba(10,14,34,.66);border:1px solid var(--line);
+  backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);
+  box-shadow:0 18px 50px -20px rgba(0,0,0,.8);
 }
-
-.brand{display:flex;align-items:center;gap:12px}
-.brand-mark{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#38bdf8,#818cf8);
-  color:#070b12;
-  font-family:Manrope,sans-serif;
-  font-weight:900;
-  font-size:23px;
-  box-shadow:0 4px 20px rgba(56, 189, 248, 0.3)
+.brand{display:flex;align-items:center;gap:11px;color:var(--text);flex-shrink:0}
+.brand:hover{text-decoration:none}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,rgba(255,227,168,.2),rgba(255,143,156,.12));border:1px solid rgba(255,212,138,.35);box-shadow:0 8px 24px -8px rgba(255,184,107,.55)}
+.brand-mark svg{width:24px;height:24px}
+.brand-name{font:700 19px var(--f-head);letter-spacing:-.3px;line-height:1.2}
+.brand-name small{font:700 10px var(--f-num);letter-spacing:1.6px;color:var(--sun);margin-inline-start:6px}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:-1px}
+.now-chip{
+  margin-inline:auto;display:flex;align-items:center;gap:10px;min-width:0;
+  padding:7px 14px;border-radius:999px;background:var(--glass-2);border:1px solid var(--line);font-size:12.5px;
 }
-.brand-name{font-size:21px;font-weight:700;letter-spacing:-.5px}
-.brand-sub{color:var(--muted);font-size:12px;margin-top:-4px}
+.now-chip .pulse{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(94,234,212,.6);animation:ping 2s infinite;flex-shrink:0}
+.now-chip b{font:700 14px var(--f-num);color:var(--sun);direction:ltr;font-variant-numeric:tabular-nums}
+.now-chip span.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(94,234,212,0)}100%{box-shadow:0 0 0 0 rgba(94,234,212,0)}}
+.top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.pill{display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:var(--glass-2);border:1px solid var(--line);color:var(--muted);font-size:12px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);flex:0 0 7px}
 
-.top-actions{display:flex;align-items:center;gap:9px}
-
-.pill{
-  border:1px solid var(--line);
-  background:rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border-radius:999px;
-  padding:8px 14px;
-  color:var(--muted);
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:12px;
-  white-space:nowrap
-}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
-
+/* ---------- الأزرار ---------- */
 .button{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:9px 14px;
-  color:var(--text);
-  background:rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  transition:.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 18px;border-radius:14px;border:1px solid var(--line-2);
+  background:var(--glass-2);color:var(--text);font-weight:500;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s,border-color .25s,box-shadow .25s;
 }
-.button:hover{
-  background:rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform:translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-}
-.button.primary{
-  background:linear-gradient(135deg, #38bdf8, #2563eb);
-  color:#fff;
-  border-color:transparent;
-  font-weight:700;
-  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-}
-.button.primary:hover{
-  box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
-}
-.button.small{font-size:12px;padding:7px 11px}
+.button:hover{text-decoration:none;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.32);transform:translateY(-2px)}
+.button:active{transform:none}
+.button:disabled{opacity:.6;cursor:wait}
+.button.primary{background:var(--sunset);color:#2a1300;border-color:transparent;font-weight:700;box-shadow:0 12px 32px -10px rgba(255,160,100,.65),0 0 0 1px rgba(255,255,255,.35) inset}
+.button.primary:hover{filter:brightness(1.06);box-shadow:0 16px 40px -10px rgba(255,160,100,.8),0 0 0 1px rgba(255,255,255,.45) inset}
+.button.small{padding:8px 13px;font-size:12.5px;border-radius:12px}
+.icon-btn{width:42px;height:42px;padding:0;border-radius:13px}
 
-.hero{padding:42px 0 24px;display:grid;grid-template-columns:1.45fr .9fr;gap:22px;align-items:stretch}
-.eyebrow{display:flex;align-items:center;gap:8px;color:var(--mint);font-weight:600;font-size:13px;margin-bottom:10px}
-.eyebrow .spark{font-size:18px}
-.hero h1{font-size:clamp(31px,5vw,54px);line-height:1.18;letter-spacing:-1.7px;margin:0 0 14px;max-width:720px}
-.hero h1 span{
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* ---------- الدوك (جوال: سفلي / كمبيوتر: جانبي) ---------- */
+.dock{
+  position:fixed;z-index:40;inset-inline:10px;bottom:calc(10px + var(--safe-b));
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;padding:6px;
+  border-radius:24px;background:rgba(10,14,34,.82);border:1px solid var(--line-2);
+  backdrop-filter:blur(26px) saturate(1.6);-webkit-backdrop-filter:blur(26px) saturate(1.6);
+  box-shadow:0 20px 60px -10px rgba(0,0,0,.85);
 }
-.hero p{color:var(--muted);font-size:16px;line-height:1.9;max-width:650px;margin:0 0 22px}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-.time-panel{
-  position:relative;
-  overflow:hidden;
-  border:1px solid rgba(56, 189, 248, 0.2);
-  background:linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(7, 11, 18, 0.9));
-  backdrop-filter: blur(16px);
-  border-radius:22px;
-  padding:23px;
-  box-shadow:var(--shadow);
-  min-height:225px
+.dock a{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:8px 2px 7px;border-radius:18px;color:var(--muted);font-size:10.5px;font-weight:500;transition:.25s;
 }
-.time-panel:before{content:"✦";position:absolute;left:23px;top:15px;color:var(--mint);font-size:30px;opacity:.7}
-.time-title{font-size:13px;color:var(--muted);margin-bottom:6px}
-.time-big{font:800 32px Manrope,sans-serif;letter-spacing:1px;direction:ltr;text-align:right;margin:0 0 3px;color:#fff}
-.time-caption{font-size:12px;color:var(--muted)}
-.time-divider{height:1px;background:var(--line);margin:17px 0}
-.time-row{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
-.time-row strong{font-family:Manrope,sans-serif;letter-spacing:.5px;direction:ltr;color:var(--mint)}
+.dock a:hover{text-decoration:none;color:var(--text)}
+.dock a svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dock a.active{color:#2a1300;background:var(--sunset);box-shadow:0 8px 22px -8px rgba(255,160,100,.8)}
+.dock .desk-only{display:none}
 
-.section-heading{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:28px 0 15px}
-.section-heading h2{font-size:22px;margin:0;letter-spacing:-.5px}
-.section-heading p{color:var(--muted);font-size:13px;margin:4px 0 0}
-.section-kicker{font-family:Manrope,sans-serif;font-size:11px;letter-spacing:1.2px;color:var(--mint);text-transform:uppercase}
+/* ---------- البطل ---------- */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;padding:42px 0 18px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--sun);background:rgba(255,212,138,.08);border:1px solid rgba(255,212,138,.28);margin-bottom:18px}
+.hero h1{font:700 clamp(34px,5.4vw,68px)/1.12 var(--f-head);letter-spacing:-1.5px;margin:0 0 16px}
+.hero h1 span{background:linear-gradient(100deg,#ffe3a8,#ffb86b 35%,#ff8f9c 65%,#ffe3a8);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 8s linear infinite}
+@keyframes shine{to{background-position:-200% center}}
+.hero p{color:var(--muted);font-size:16.5px;line-height:2;max-width:560px;margin:0 0 24px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px}
 
-.events-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+/* بطاقة الفعالية المميزة */
+.spot{
+  position:relative;overflow:hidden;border-radius:30px;padding:24px;
+  background:
+    radial-gradient(90% 80% at 100% 0%,rgba(255,184,107,.2),transparent 60%),
+    radial-gradient(80% 90% at 0% 100%,rgba(185,169,255,.18),transparent 60%),
+    rgba(14,18,42,.78);
+  backdrop-filter:blur(22px);box-shadow:0 30px 70px -28px rgba(0,0,0,.9);
+}
+.spot::before,.panel::before,.stat-strip::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(150deg,rgba(255,212,138,.55),rgba(255,255,255,.05) 35%,rgba(255,255,255,.03) 65%,rgba(185,169,255,.4));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+}
+.spot-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.spot-tag{font-size:12.5px;color:var(--muted);font-weight:500}
+.spot-live{display:none;align-items:center;gap:6px;font:800 10.5px var(--f-num);letter-spacing:1.4px;color:#2a1300;background:var(--sunset);padding:4px 11px;border-radius:999px}
+.spot-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#2a1300;animation:ping 1.4s infinite}
+.spot[data-active="1"] .spot-live{display:inline-flex}
+.spot-main{display:flex;align-items:center;gap:15px}
+.spot-icon{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;font-size:32px;background:linear-gradient(145deg,rgba(255,227,168,.22),rgba(255,143,156,.1));border:1px solid rgba(255,212,138,.35);box-shadow:0 12px 30px -10px rgba(255,184,107,.55);flex:0 0 62px}
+.spot-name{font:700 clamp(22px,3vw,28px) var(--f-head);line-height:1.25}
+.spot-desc{font-size:12.5px;color:var(--muted);margin-top:2px}
+.spot-count{font:800 clamp(44px,7vw,68px)/1 var(--f-num);letter-spacing:1px;margin:22px 0 14px;text-align:right;font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#fff,#ffe3a8 70%,#ffb86b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.spot[data-active="1"] .spot-count{filter:drop-shadow(0 0 22px rgba(255,184,107,.55))}
+.spot-bar{height:7px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+.spot-bar i{display:block;height:100%;width:0;border-radius:9px;background:var(--sunset);transition:width 1s linear;box-shadow:0 0 14px rgba(255,160,100,.7)}
+.spot-foot{display:flex;justify-content:space-between;gap:10px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.spot-foot #spotLocal{color:var(--text);font-weight:600}
 
+/* شريط الأرقام */
+.stat-strip{position:relative;display:grid;grid-template-columns:repeat(3,1fr);margin:14px 0 6px;border-radius:var(--r-lg);background:var(--glass);backdrop-filter:blur(18px)}
+.stat{padding:18px 20px;min-width:0}
+.stat+.stat{border-inline-start:1px solid var(--line)}
+.stat-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.stat-val{font:800 clamp(22px,3vw,32px) var(--f-num);letter-spacing:.8px;direction:ltr;text-align:right;margin-top:3px;font-variant-numeric:tabular-nums}
+.stat-val.sun{background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- عناوين الأقسام ---------- */
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:44px 0 16px}
+.kicker{display:flex;align-items:center;gap:10px;font:700 11px var(--f-num);letter-spacing:2.2px;color:var(--sun);text-transform:uppercase}
+.kicker::before{content:"";width:24px;height:2px;border-radius:2px;background:var(--sunset)}
+.sec-head h2{font:700 clamp(22px,3vw,30px) var(--f-head);margin:3px 0 0;letter-spacing:-.5px}
+.sec-head p{margin:5px 0 0;color:var(--muted);font-size:13.5px}
+.date-tag{white-space:nowrap;background:var(--glass-2);border:1px solid var(--line);border-radius:11px;padding:6px 12px;font-size:11.5px;color:var(--muted)}
+
+/* ---------- الفعاليات ---------- */
+.events-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .event-card{
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:17px;
-  background: var(--panel);
-  backdrop-filter: blur(16px);
-  min-height:180px;
-  position:relative;
-  overflow:hidden;
-  transition:all .3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  position:relative;overflow:hidden;padding:18px;border-radius:22px;min-height:196px;
+  background:radial-gradient(90% 70% at 100% 0%,rgba(185,169,255,.12),transparent 60%),var(--glass);
+  border:1px solid var(--line);backdrop-filter:blur(16px);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s,box-shadow .3s;
 }
-.event-card::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--mint), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.event-card:hover{border-color:rgba(56, 189, 248, 0.4);transform:translateY(-4px);box-shadow: 0 12px 35px rgba(56, 189, 248, 0.15)}
-.event-card:hover::before{opacity: 1;}
+.event-card:hover{transform:translateY(-4px);border-color:var(--line-2);box-shadow:0 24px 50px -22px rgba(0,0,0,.8)}
+.event-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.event-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:24px;background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border:1px solid var(--line-2)}
+.event-status{font-size:11px;padding:4px 11px;border-radius:999px;color:var(--muted);background:var(--glass-2);border:1px solid var(--line)}
+.event-status.active{color:#2a1300;background:var(--sunset);border-color:transparent;font-weight:700;box-shadow:0 0 18px rgba(255,160,100,.55)}
+.event-card h3{font:700 18px var(--f-head);margin:15px 0 0}
+.event-desc{font-size:12px;color:var(--muted);margin-top:2px;min-height:20px}
+.event-count{font:800 28px var(--f-num);direction:ltr;text-align:right;margin-top:12px;letter-spacing:.6px;color:var(--sky);font-variant-numeric:tabular-nums}
+.event-foot{display:flex;justify-content:space-between;gap:8px;margin-top:8px;padding-top:9px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--muted)}
+.event-card:has(.event-status.active){border-color:rgba(255,184,107,.55);background:radial-gradient(90% 70% at 100% 0%,rgba(255,184,107,.22),transparent 60%),var(--glass);box-shadow:0 0 0 1px rgba(255,184,107,.18),0 26px 54px -24px rgba(255,150,90,.5)}
+.event-card:has(.event-status.active) .event-count{color:var(--sun);text-shadow:0 0 26px rgba(255,184,107,.5)}
 
-.event-top{display:flex;align-items:center;justify-content:space-between;gap:9px}
-.event-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:rgba(56, 189, 248, 0.1);border:1px solid rgba(56, 189, 248, 0.2)}
-.event-status{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:4px 8px;background:rgba(255,255,255,0.02)}
-.event-status.active{color:var(--mint);border-color:rgba(56, 189, 248, 0.4);background:rgba(56, 189, 248, 0.1);font-weight:600;}
-.event-card h3{font-size:16px;margin:13px 0 0}
-.event-desc{color:var(--muted);font-size:11px;margin-top:2px;min-height:20px}
-.event-count{font:700 22px Manrope,sans-serif;direction:ltr;text-align:right;letter-spacing:.4px;margin-top:10px;color:var(--mint)}
-.event-foot{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin-top:3px}
-
-.lower-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:15px;margin-top:26px}
-
-.panel{
-  border:1px solid var(--line);
-  background: var(--panel);
-  backdrop-filter: blur(16px);
-  border-radius:21px;
-  padding:21px;
-  min-width:0;
-  box-shadow: var(--shadow);
-  transition: border-color 0.3s;
-}
-.panel:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.panel-head{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:17px}
-.panel-title{display:flex;gap:11px;align-items:center}
-.panel-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:rgba(244, 207, 131, 0.1);border:1px solid rgba(244, 207, 131, 0.25);font-size:21px}
-.panel-head h2{font-size:19px;margin:0}
-.panel-head p{font-size:12px;color:var(--muted);margin:3px 0 0}
-
-.date-tag{white-space:nowrap;background:rgba(255,255,255,0.04);border:1px solid var(--line);border-radius:9px;padding:5px 10px;font-size:11px;color:var(--muted)}
-
-.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px}
-.progress{height:6px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;margin-bottom:14px}
-.progress-bar{height:100%;background:linear-gradient(90deg,#38bdf8,#818cf8);width:0;transition:width .25s}
-
-.quest-list{display:grid;gap:9px}
-.quest{display:flex;align-items:start;gap:11px;border:1px solid var(--line);background:rgba(255,255,255,0.02);border-radius:13px;padding:12px;transition:.2s}
-.quest:hover{border-color:rgba(56, 189, 248, 0.3); background:rgba(255,255,255,0.04);}
-.quest input{appearance:none;flex:0 0 18px;width:18px;height:18px;border:1px solid var(--muted);border-radius:6px;margin:3px 0 0;cursor:pointer;position:relative;background: rgba(0,0,0,0.2); transition: 0.2s;}
-.quest input:checked{background:var(--mint);border-color:var(--mint);box-shadow: 0 0 10px var(--mint-glow);}
-.quest input:checked:after{content:"✓";position:absolute;inset:-2px 0 0;color:#070b12;text-align:center;font-size:14px;font-weight:900}
-.quest-copy{min-width:0;flex:1}
-.quest-copy strong{display:block;font-size:13px;font-weight:600;line-height:1.6}
-.quest-copy small{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6}
-.quest.done{opacity:.52}
-.quest.done .quest-copy strong{text-decoration:line-through}
-.quest-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;border-top:1px solid var(--line);margin-top:15px;padding-top:13px}
-.hint{font-size:10px;color:var(--muted)}
-
-.spirit-banner{position:relative;background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.7));border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:16px;overflow:hidden;margin-bottom:14px}
-.spirit-overline{font-size:11px;color:var(--mint);display:flex;align-items:center;gap:6px;margin-bottom:7px;font-weight:600}
-.spirit-name{font-size:22px;font-weight:700;margin:0 0 2px}
-.spirit-name-en{color:var(--muted);font-family:Manrope,sans-serif;font-size:12px;direction:ltr;text-align:right}
-.spirit-dates{font-size:12px;color:var(--text);margin-top:10px}
-.spirit-time{font:700 20px Manrope,sans-serif;direction:ltr;text-align:right;color:var(--gold);margin-top:8px}
-
-.cost-title{font-size:12px;font-weight:600;margin:12px 0 9px}
-.cost-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.cost-card{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:13px;padding:11px 8px;text-align:center}
-.cost-symbol{font-size:18px}
-.cost-num{font:800 20px Manrope,sans-serif;margin:4px 0 1px;color:#fff}
-.cost-label{font-size:10px;color:var(--muted)}
-
-.cosmetic-list{display:grid;gap:7px;margin-top:12px}
-.cosmetic-line{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
-.cosmetic-line:last-child{border-bottom:0}
-.cosmetic-line span:last-child{font:700 13px Manrope,sans-serif;color:var(--gold);direction:ltr;white-space:nowrap}
-
-.notice{font-size:10px;color:var(--muted);line-height:1.8;margin-top:11px}
-
-.spirit-location{margin-top:14px;border:1px solid var(--line);background:rgba(255,255,255,0.02);border-radius:13px;padding:12px;font-size:12px}
-.spirit-location strong{color:var(--mint)}
-.spirit-location p{margin:5px 0 0;color:var(--muted);line-height:1.8}
-
-.status-strip{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);margin-top:14px;padding-top:12px;color:var(--muted);font-size:11px;flex-wrap:wrap}
-.status-strip .dot{flex:0 0 7px}
-
-.tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:15px 0 38px}
-.tip{display:flex;align-items:start;gap:12px;background:rgba(15, 23, 42, 0.5);border:1px solid var(--line);border-radius:16px;padding:15px; backdrop-filter: blur(10px);}
-.tip-icon{font-size:21px;color:var(--mint)}
-.tip h3{font-size:13px;margin:0 0 4px}
-.tip p{font-size:11px;color:var(--muted);margin:0;line-height:1.8}
-
-.footer{display:flex;justify-content:space-between;gap:18px;align-items:start;border-top:1px solid var(--line);color:var(--muted);font-size:11px;padding:20px 0 28px;flex-wrap:wrap}
-.footer p{margin:0;max-width:650px;line-height:1.9}
-.footer-links{display:flex;gap:13px;white-space:nowrap;flex-wrap:wrap}
-
-.creator-credit{width:100%;display:flex;align-items:center;justify-content:center;gap:14px;padding:18px 0;margin-bottom:6px;border-bottom:1px solid var(--line)}
-.creator-avatar{width:64px;height:64px;border-radius:50%;border:2px solid var(--mint);object-fit:cover;background:#070b12;box-shadow:0 0 20px var(--mint-glow)}
-.creator-name{font:800 16px Manrope,sans-serif;color:var(--gold);letter-spacing:1.5px;text-align:center}
-.creator-label{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
-
-.toast{position:fixed;bottom:18px;left:18px;max-width:min(420px,calc(100vw - 36px));padding:12px 15px;background:#38bdf8;color:#070b12;border-radius:13px;box-shadow:0 10px 30px rgba(56,189,248,0.4);font-size:13px;font-weight:600;transform:translateY(150%);transition:transform .3s;z-index:20}
-.toast.show{transform:translateY(0)}
-
-.skeleton{color:var(--muted);font-size:12px}
-.loading-ring{display:inline-block;width:12px;height:12px;border:2px solid var(--muted);border-top-color:var(--mint);border-radius:50%;animation:spin .7s linear infinite}
+/* ---------- اللوحات ---------- */
+.panel{position:relative;padding:24px;border-radius:var(--r-lg);min-width:0;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 24px 60px -30px rgba(0,0,0,.8)}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}
+.panel-title{display:flex;align-items:center;gap:13px;min-width:0}
+.panel-icon{flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;border-radius:16px;font-size:23px;background:linear-gradient(145deg,rgba(255,227,168,.2),rgba(255,143,156,.08));border:1px solid rgba(255,212,138,.3)}
+.panel-head h2{font:700 20px var(--f-head);margin:0}
+.panel-head p{margin:3px 0 0;font-size:12.5px;color:var(--muted);line-height:1.7}
+.grid-2{display:grid;gap:18px;grid-template-columns:1fr 1fr;margin-top:18px}
+.grid-2.shard-quests{grid-template-columns:.92fr 1.08fr}
+.hint{font-size:11.5px;color:var(--muted)}
+.notice{font-size:11.5px;color:var(--muted);line-height:1.9;margin:12px 0 0}
+.skeleton{color:var(--muted);font-size:12.5px}
+.loading-ring{display:inline-block;width:13px;height:13px;border:2px solid var(--muted);border-top-color:var(--sun);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.empty-state{grid-column:1/-1;margin:0;padding:18px;text-align:center;border:1px dashed var(--line-2);border-radius:16px;color:var(--muted);font-size:12.5px;background:rgba(255,255,255,.02)}
+.status-strip{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px}
 
-.quick-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:6px 0 18px}
-.quick-note{margin-inline-start:auto}
-.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:25px}
-.wide-panel{margin-top:16px}
+/* الشظية */
+#shard[data-state="red"]{background:radial-gradient(90% 70% at 100% 0%,rgba(255,110,120,.22),transparent 60%),var(--glass)}
+#shard[data-state="black"]{background:radial-gradient(90% 70% at 100% 0%,rgba(160,170,210,.16),transparent 60%),var(--glass)}
+.shard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shard-cell{padding:13px 15px;border-radius:16px;background:var(--glass-2);border:1px solid var(--line)}
+.shard-cell .hint{margin-bottom:3px}
+.shard-cell div:last-child{font:700 16px var(--f-head)}
+.shard-timer{margin-top:12px;padding:20px;text-align:center;border-radius:20px;background:linear-gradient(145deg,rgba(255,184,107,.12),rgba(255,143,156,.08));border:1px solid rgba(255,184,107,.3)}
+.shard-timer .hint{font-weight:600;color:var(--sun)}
+.shard-timer #shardCountdownTime{font:800 clamp(32px,5vw,42px) var(--f-num);letter-spacing:1px;margin-top:4px;font-variant-numeric:tabular-nums;background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
-.calculator-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.calculator-fields label{display:grid;gap:6px;color:#c9dce5;font-size:12px}
-.calculator-fields label:last-child{grid-column:1/-1}
-.calculator-fields input,.wish-form input{width:100%;min-width:0;border:1px solid var(--line);background:rgba(0,0,0,0.3);color:var(--text);border-radius:11px;padding:10px 12px;font:inherit;font-size:13px; transition: 0.2s;}
-.calculator-fields input:focus, .wish-form input:focus {border-color:var(--mint);outline:none;box-shadow: 0 0 10px var(--mint-glow);}
-
-.calculator-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-.calculator-result>div{background:rgba(56,189,248,0.04);border:1px solid rgba(56,189,248,0.15);border-radius:13px;padding:13px}
-.calculator-result span,.calculator-result strong{display:block}
-.calculator-result strong{font:800 24px Manrope,sans-serif;color:var(--mint);margin-top:4px}
-
-.wish-form{display:flex;gap:8px}
-.wish-form input{flex:1}
-.wish-list{display:grid;gap:8px;margin-top:13px}
-.wish-item{display:flex;align-items:center;justify-content:space-between;gap:9px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,0.02);padding:10px 12px;font-size:13px}
-.wish-item button{border:1px solid var(--line);background:rgba(255,255,255,0.04);color:var(--text);border-radius:8px;padding:4px 8px; transition: 0.2s;}
-.wish-item button:hover{background:rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;}
-
-.wish-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:13px;padding-top:12px}
-
-.timeline-grid,.news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.timeline-card,.news-card{border:1px solid var(--line);background:rgba(255,255,255,0.02);border-radius:14px;padding:13px;min-width:0}
-.timeline-card h3,.news-card h3{font-size:13px;margin:0 0 7px;line-height:1.7}
-.timeline-detail{font-size:12px;color:var(--mint);font-weight:600}
-.timeline-source,.news-date{font-size:10px;color:var(--muted);margin-top:7px}
-.news-card a{display:block;font-size:13px;font-weight:600;line-height:1.7}
-.news-card.clickable{cursor:pointer;transition:.2s}
-.news-card.clickable:hover{border-color:var(--mint);transform:translateY(-1px);background:rgba(255,255,255,0.04);}
-.news-toggle{color:var(--mint);font-size:10px;margin-inline-start:6px;font-weight:600}
-.news-full{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;line-height:1.9;color:var(--text);white-space:pre-wrap;word-wrap:break-word;max-height:400px;overflow-y:auto}
-.news-card p{font-size:11px;color:var(--muted);line-height:1.7;margin:6px 0 0}
-.empty-state{grid-column:1/-1;margin:0;border:1px dashed rgba(255,255,255,0.15);border-radius:12px;padding:15px;color:var(--muted);font-size:12px;text-align: center;}
-
-.install-dialog{
-  width:min(540px,calc(100% - 28px));
-  border:1px solid rgba(56,189,248,0.25);
-  border-radius:20px;
-  background:rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(20px);
-  color:var(--text);
-  padding:22px;
-  box-shadow:0 20px 80px rgba(0,0,0,0.6)
-}
-.install-dialog::backdrop{background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)}
-.install-dialog h2{margin:0;font-size:20px}
-.install-steps h3{font-size:14px;color:var(--mint);margin:17px 0 4px}
-.install-steps p{margin:0;color:var(--muted);font-size:13px;line-height:1.9}
-.quick-actions button[aria-pressed="true"]{background:var(--mint);color:#070b12;border-color:transparent;font-weight:600}
-
-.spirit-art-wrap{position:relative;margin:0 0 14px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(0,0,0,0.3);min-height:120px;display:grid;place-items:center}
-.spirit-art-img{display:block;width:100%;max-height:280px;object-fit:contain;background:radial-gradient(circle at 50% 40%,rgba(56,189,248,0.1),rgba(15,23,42,0.8) 60%)}
-.spirit-art-caption{position:absolute;bottom:0;inset-inline:0;padding:18px 12px 8px;background:linear-gradient(transparent,rgba(7,11,18,0.9));font-size:10px;color:var(--text)}
-.spirit-art-placeholder{min-height:148px;width:100%;display:grid;place-items:center;text-align:center;color:var(--muted);background:radial-gradient(circle at 50% 20%,rgba(56,189,248,0.08),rgba(15,23,42,0.8) 60%);font-size:40px}
-.spirit-art-placeholder small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
-
-.quest-thumbnail{width:38px;height:38px;flex:0 0 38px;overflow:hidden;border-radius:11px;display:grid;place-items:center;font-size:21px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2)}
+/* المهام */
+.quest-head-side{display:flex;align-items:center;gap:12px}
+.ring{--p:0;position:relative;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--amber) calc(var(--p)*1%),rgba(255,255,255,.09) 0);flex:0 0 58px}
+.ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#0f1330}
+.ring span{position:relative;font:800 13px var(--f-num)}
+.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+.progress{height:8px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:16px}
+.progress-bar{height:100%;width:0;border-radius:9px;background:var(--sunset);transition:width .45s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 14px rgba(255,160,100,.7)}
+.quest-list{display:grid;gap:10px}
+.quest{display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:18px;cursor:pointer;background:var(--glass-2);border:1px solid var(--line);transition:.25s}
+.quest:hover{border-color:rgba(255,184,107,.45);background:rgba(255,184,107,.06)}
+.quest-thumbnail{flex:0 0 44px;width:44px;height:44px;border-radius:14px;overflow:hidden;display:grid;place-items:center;font-size:22px;background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border:1px solid var(--line-2)}
 .quest-thumbnail img{width:100%;height:100%;object-fit:cover;display:block}
-.news-title{font-size:14px;font-weight:700;line-height:1.65;color:var(--text)}
+.quest input{order:3;appearance:none;-webkit-appearance:none;flex:0 0 26px;width:26px;height:26px;margin:0;border-radius:9px;border:1.6px solid var(--dim);background:rgba(0,0,0,.25);position:relative;cursor:pointer;transition:.2s}
+.quest input:checked{background:var(--sunset);border-color:transparent;box-shadow:0 0 16px rgba(255,160,100,.55)}
+.quest input:checked::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#2a1300;font-weight:900;font-size:15px}
+.quest-copy{flex:1;min-width:0}
+.quest-copy strong{display:block;font-size:14px;font-weight:600;line-height:1.6}
+.quest-copy small{display:block;margin-top:1px;font-size:11.5px;color:var(--muted);direction:ltr;text-align:right;line-height:1.5}
+.quest.done{opacity:.5}
+.quest.done .quest-copy strong{text-decoration:line-through}
+.quest-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
 
-@media(max-width:900px){
-  .events-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hero{grid-template-columns:1fr .8fr}
-  .lower-grid{grid-template-columns:1fr}
-  .feature-grid{grid-template-columns:1fr}
-  .timeline-grid,.news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tips-grid{grid-template-columns:1fr 1fr}
+/* الروح المسافرة */
+.spirit-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
+.spirit-art-wrap{position:relative;border-radius:22px;overflow:hidden;display:grid;place-items:center;min-height:200px;background:#0a0e24;border:1px solid var(--line);margin-bottom:14px}
+.spirit-art-img{display:block;width:100%;max-height:340px;object-fit:contain;background:radial-gradient(circle at 50% 40%,rgba(255,184,107,.28),rgba(10,14,36,.9) 66%)}
+.spirit-art-caption{position:absolute;inset-inline:0;bottom:0;padding:34px 14px 11px;font-size:12.5px;font-weight:600;background:linear-gradient(transparent,rgba(6,9,20,.92))}
+.spirit-art-placeholder{width:100%;min-height:200px;display:grid;place-items:center;text-align:center;font-size:46px;color:var(--sun);background:radial-gradient(circle at 50% 30%,rgba(255,184,107,.22),rgba(10,14,36,.9) 66%)}
+.spirit-art-placeholder small{display:block;font-size:11.5px;color:var(--muted);margin-top:4px}
+.spirit-banner{position:relative;overflow:hidden;padding:20px;border-radius:22px;background:radial-gradient(80% 120% at 0% 0%,rgba(255,212,138,.2),transparent 60%),radial-gradient(70% 100% at 100% 100%,rgba(255,143,156,.16),transparent 60%),rgba(20,22,52,.85);border:1px solid rgba(255,212,138,.32)}
+.spirit-overline{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--sun);margin-bottom:6px}
+.spirit-name{font:700 clamp(26px,3.4vw,34px) var(--f-head);margin:0;line-height:1.25}
+.spirit-name-en{font:500 13px var(--f-num);color:var(--muted);direction:ltr;text-align:right}
+.spirit-dates{font-size:12.5px;margin-top:10px;opacity:.9}
+.spirit-time{font:800 26px var(--f-num);direction:ltr;text-align:right;margin-top:8px;font-variant-numeric:tabular-nums;background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cost-title{font:600 13px var(--f-head);margin:0 0 10px}
+.cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cost-card{padding:14px 8px;text-align:center;border-radius:18px;background:var(--glass-2);border:1px solid var(--line);transition:.25s}
+.cost-card:hover{transform:translateY(-3px);border-color:rgba(255,212,138,.45)}
+.cost-symbol{font-size:21px}
+.cost-num{font:800 26px var(--f-num);margin:4px 0 0}
+.cost-label{font-size:11px;color:var(--muted)}
+.cosmetic-list{margin-top:12px;display:grid}
+.cosmetic-line{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 2px;border-bottom:1px dashed var(--line);font-size:13px}
+.cosmetic-line:last-child{border-bottom:0}
+.cosmetic-line span:last-child{font:700 13px var(--f-num);color:var(--sun);direction:ltr;white-space:nowrap}
+.spirit-location{margin-top:14px;padding:14px;border-radius:16px;background:var(--glass-2);border:1px solid var(--line);font-size:13px}
+.spirit-location strong{color:var(--sun)}
+.spirit-location p{margin:5px 0 0;color:var(--muted);line-height:1.9}
+
+/* الأدوات */
+.calculator-fields{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.calculator-fields label{display:grid;gap:7px;font-size:12.5px;color:#cfd4ee}
+.calculator-fields label:last-child{grid-column:1/-1}
+.calculator-fields input,.wish-form input{width:100%;min-width:0;padding:12px 14px;border-radius:14px;border:1px solid var(--line-2);background:rgba(4,6,18,.6);color:var(--text);font:inherit;font-size:14px;transition:.2s}
+.calculator-fields input:focus,.wish-form input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 4px rgba(255,184,107,.15)}
+input::placeholder{color:#5b6488}
+.calculator-result{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.calculator-result>div{padding:16px;border-radius:18px;background:linear-gradient(145deg,rgba(255,184,107,.12),rgba(255,143,156,.07));border:1px solid rgba(255,184,107,.28)}
+.calculator-result span,.calculator-result strong{display:block}
+.calculator-result strong{font:800 30px var(--f-num);margin-top:3px;background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.wish-form{display:flex;gap:9px}
+.wish-form input{flex:1}
+.wish-list{display:grid;gap:9px;margin-top:14px}
+.wish-item{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:11px 14px;border-radius:14px;background:var(--glass-2);border:1px solid var(--line);font-size:13.5px}
+.wish-item button{padding:5px 11px;border-radius:9px;font-size:12px;background:var(--glass-2);border:1px solid var(--line);transition:.2s}
+.wish-item button:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5);color:#fecaca}
+.wish-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+
+/* المواسم والأخبار */
+.timeline-grid,.news-grid{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.timeline-card,.news-card{min-width:0;padding:17px;border-radius:20px;background:var(--glass-2);border:1px solid var(--line);transition:.3s}
+.timeline-card{border-top:3px solid rgba(255,184,107,.55)}
+.timeline-card:hover{transform:translateY(-3px);border-color:rgba(255,184,107,.5);background:rgba(255,184,107,.05)}
+.timeline-card h3{font:700 15px var(--f-head);margin:0 0 6px;line-height:1.6}
+.timeline-detail{font-size:13px;font-weight:600;color:var(--sun)}
+.timeline-source,.news-date{font-size:11px;color:var(--muted);margin-top:6px}
+.news-card.clickable{cursor:pointer}
+.news-card.clickable:hover{transform:translateY(-3px);border-color:rgba(130,217,255,.5);background:rgba(130,217,255,.05);box-shadow:0 22px 44px -24px rgba(130,217,255,.5)}
+.news-title{font:700 15px var(--f-head);line-height:1.7}
+.news-card p{margin:8px 0 0;font-size:12.5px;line-height:1.85;color:var(--muted)}
+.news-toggle{margin-inline-start:6px;font-size:11px;font-weight:600;color:var(--sky)}
+.news-full{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:2;white-space:pre-wrap;word-wrap:break-word;max-height:420px;overflow-y:auto;color:var(--text)}
+
+/* الفوتر */
+.footer{margin-top:44px;padding-top:6px}
+.creator-credit{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;padding:22px;border-radius:var(--r-lg);background:radial-gradient(60% 140% at 50% 0%,rgba(255,184,107,.16),transparent 70%),var(--glass);border:1px solid var(--line)}
+.creator-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid var(--sun);box-shadow:0 0 30px rgba(255,184,107,.45)}
+.creator-name{font:800 18px var(--f-num);letter-spacing:2px;text-align:center;background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.creator-label{font-size:12px;color:var(--muted);text-align:center;margin-top:2px}
+.footer-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 4px 10px;font-size:12px;color:var(--muted)}
+.footer-meta p{margin:0;max-width:680px;line-height:2}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap}
+
+/* عناصر عامة */
+.toast{position:fixed;z-index:60;inset-inline-start:50%;transform:translate(50%,200%);bottom:calc(98px + var(--safe-b));max-width:min(440px,calc(100vw - 28px));padding:13px 18px;border-radius:16px;font-size:13px;font-weight:600;text-align:center;background:rgba(14,18,42,.94);border:1px solid rgba(255,184,107,.5);box-shadow:0 20px 50px -10px rgba(0,0,0,.8),0 0 30px rgba(255,184,107,.2);backdrop-filter:blur(14px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.toast.show{transform:translate(50%,0)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.install-dialog{width:min(540px,calc(100% - 28px));padding:24px;border-radius:26px;color:var(--text);background:rgba(11,15,36,.97);border:1px solid rgba(255,184,107,.3);backdrop-filter:blur(24px);box-shadow:0 30px 100px rgba(0,0,0,.8)}
+.install-dialog::backdrop{background:rgba(2,4,12,.78);backdrop-filter:blur(6px)}
+.install-dialog h2{margin:0;font:700 21px var(--f-head)}
+.install-dialog .panel-head p{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+.install-steps h3{margin:18px 0 4px;font-size:14px;color:var(--sun)}
+.install-steps p{margin:0;color:var(--muted);font-size:13px;line-height:1.9}
+.quick-actions button[aria-pressed="true"]{background:var(--sunset);color:#2a1300;border-color:transparent;font-weight:700}
+
+/* ---------- كمبيوتر: شريط جانبي ---------- */
+@media(min-width:1024px){
+  .app{padding-inline-start:92px;padding-bottom:40px}
+  .dock{
+    inset-inline:auto;inset-inline-start:22px;bottom:auto;top:50%;transform:translateY(-50%);
+    grid-auto-flow:row;grid-auto-columns:auto;width:62px;gap:6px;padding:8px;border-radius:26px;
+  }
+  .dock a{padding:0;height:46px;border-radius:16px}
+  .dock a .dl{display:none}
+  .dock a svg{width:22px;height:22px}
+  .dock .desk-only{display:flex}
+  .dock a::after{
+    content:attr(data-label);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(6px);
+    padding:6px 12px;border-radius:10px;white-space:nowrap;font-size:12px;font-weight:600;color:var(--text);
+    background:rgba(10,14,34,.95);border:1px solid var(--line-2);opacity:0;pointer-events:none;transition:.2s;
+  }
+  .dock a:hover::after{opacity:1;transform:translateY(-50%)}
+  .toast{bottom:28px}
 }
+/* ---------- تابلت ---------- */
+@media(max-width:1023px){
+  .hero{grid-template-columns:1fr;padding-top:30px}
+  .grid-2,.grid-2.shard-quests{grid-template-columns:1fr}
+  .spirit-layout{grid-template-columns:1fr}
+  .events-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .timeline-grid,.news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* ---------- جوال ---------- */
 @media(max-width:620px){
-  .shell{width:min(100% - 22px,1180px)}
-  .topbar{padding:15px 0}
-  .brand-mark{width:40px;height:40px}
-  .brand-name{font-size:18px}
-  .pill.hide-mobile{display:none}
-  .hero{padding:28px 0 10px;grid-template-columns:1fr;gap:16px}
-  .hero h1{font-size:35px}
-  .hero p{font-size:14px}
-  .time-panel{min-height:0;padding:17px}
-  .time-big{font-size:27px}
-  .section-heading{margin-top:23px}
-  .section-heading h2{font-size:20px}
-  .events-grid{gap:9px}
-  .event-card{padding:13px;min-height:168px}
-  .event-icon{width:35px;height:35px}
-  .event-card h3{font-size:15px}
-  .event-count{font-size:19px}
-  .event-foot{font-size:9px}
-  .panel{padding:15px}
-  .panel-head h2{font-size:17px}
-  .panel-icon{width:37px;height:37px}
-  .lower-grid{margin-top:18px}
-  .tips-grid{grid-template-columns:1fr;margin-bottom:28px}
-  .timeline-grid,.news-grid{grid-template-columns:1fr}
+  .shell{width:calc(100% - 20px)}
+  .brand-sub,.pill{display:none}
+  .brand-name{font-size:17px}
+  .topbar{gap:8px;padding:8px}
+  .now-chip{padding:6px 11px;font-size:11.5px;margin-inline:auto 0;max-width:60%}
+  .hero{padding-top:22px;gap:18px}
+  .hero h1{font-size:36px;letter-spacing:-.8px}
+  .hero p{font-size:14.5px;margin-bottom:18px}
+  .hero-actions .button{flex:1 1 calc(50% - 5px);padding:11px 8px;font-size:13px}
+  .spot{padding:18px;border-radius:26px}
+  .spot-icon{width:54px;height:54px;flex-basis:54px;font-size:28px}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .stat{padding:14px 16px}
+  .stat:first-child{grid-column:1/-1;border-bottom:1px solid var(--line)}
+  .stat+.stat{border-inline-start:0}
+  .stat:nth-child(3){border-inline-start:1px solid var(--line)}
+  /* الفعاليات: سحب أفقي */
+  .events-grid{display:flex;overflow-x:auto;gap:11px;margin-inline:-10px;padding:4px 10px 12px;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .events-grid::-webkit-scrollbar{display:none}
+  .event-card{flex:0 0 76%;scroll-snap-align:center;min-height:190px}
+  .sec-head{margin-top:34px}
+  .date-tag{display:none}
+  .panel{padding:17px;border-radius:24px}
+  .panel-icon{flex-basis:42px;width:42px;height:42px;font-size:20px}
+  .panel-head h2{font-size:18px}
+  .grid-2{gap:14px}
   .calculator-fields{grid-template-columns:1fr}
   .calculator-fields label:last-child{grid-column:auto}
-  .quick-note{margin-inline-start:0;width:100%}
-  .quick-actions{gap:7px}
-  .quick-actions .button{flex:1}
-  .footer{display:block}
+  .timeline-grid,.news-grid{grid-template-columns:1fr}
+  .creator-credit{padding:16px}
+  .footer-meta{display:block}
   .footer-links{margin-top:10px}
-  .top-actions .button{padding:8px 10px}
-  .brand-sub{font-size:10px}
 }
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(min-width:1024px){.news-card:first-child:nth-last-child(n+3){grid-column:span 2}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+<div class="app">
 <div class="shell">
+
 <header class="topbar">
-<a class="brand" href="#top"><div class="brand-mark">✦</div><div><div class="brand-name">سماء <span style="color:var(--mint);font:700 11px Manrope,sans-serif;letter-spacing:1px">SKY MATE</span></div><div class="brand-sub">رفيقك اليومي في سكاي</div></div></a>
+<a class="brand" href="#top" aria-label="سماء">
+<div class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe3a8"/><stop offset=".55" stop-color="#ffb86b"/><stop offset="1" stop-color="#ff8f9c"/></linearGradient></defs><path d="M16 1.5c1.3 8.4 6.1 13.2 14.5 14.5-8.4 1.3-13.2 6.1-14.5 14.5C14.7 22.1 9.9 17.3 1.5 16 9.9 14.7 14.7 9.9 16 1.5z" fill="url(#lg)"/></svg></div>
+<div><div class="brand-name">سماء<small>SKY MATE</small></div><div class="brand-sub">رفيقك اليومي في سكاي</div></div>
+</a>
+<div class="now-chip" title="أقرب فعالية"><span class="pulse"></span><span class="nm" data-mirror="spotName">—</span><b data-mirror="spotCount">--:--</b></div>
 <div class="top-actions">
-<div class="pill hide-mobile" title="يتم اكتشاف المنطقة الزمنية من إعدادات المتصفح"><span class="dot"></span><span id="timezoneBadge">اكتشاف توقيتك…</span></div>
-<button class="button small" id="refreshBtn" type="button"><span id="refreshIcon">↻</span> تحديث</button>
+<div class="pill" title="يتم اكتشاف المنطقة الزمنية من إعدادات المتصفح"><span class="dot"></span><span id="timezoneBadge">اكتشاف توقيتك…</span></div>
+<button class="button small icon-btn" id="refreshBtn" type="button" aria-label="تحديث البيانات"><span id="refreshIcon">↻</span></button>
 </div>
 </header>
 
-<main id="top">
-<section class="hero">
+<main id="main">
+<!-- ===== البطل ===== -->
+<section class="hero" id="top">
 <div>
-<div class="eyebrow"><span class="spark">✧</span> كل اللي تحتاجه في سكاي، بمكان واحد</div>
+<div class="eyebrow"><span>✧</span> كل اللي تحتاجه في سكاي، بمكان واحد</div>
 <h1>لا تفوّت ولا لحظة<br><span>في سماء سكاي.</span></h1>
 <p>مؤقّتات الفعاليات، مهام اليوم، والروح المسافرة وتكاليفها — بتوقيت جهازك، عشان تدخل اللعبة وأنت عارف وش تسوي.</p>
-<div class="hero-actions"><a class="button primary" href="#events">⏱️ مواعيد الفعاليات</a><a class="button" href="#shard">💎 الشظية المتحطمة</a><a class="button" href="#quests">☼ مهام اليوم</a><a class="button" href="#tools">🕯️ حاسبة الشموع</a></div>
+<div class="hero-actions quick-actions">
+<button class="button primary" id="soundBtn" type="button" aria-pressed="false">🔕 فعّل التنبيه الصوتي</button>
+<button class="button" id="shareBtn" type="button">📤 شارك الموقع</button>
+<button class="button" id="installBtn" type="button">📲 أضفه لشاشتك</button>
 </div>
-<aside class="time-panel">
-<div class="time-title">الوقت عندك الآن</div>
-<div class="time-big" id="localClock">--:--:--</div>
-<div class="time-caption" id="localDate">جارٍ قراءة التاريخ…</div>
-<div class="time-divider"></div>
-<div class="time-row"><span>وقت اللعبة (Pacific)</span><strong id="skyClock">--:--:--</strong></div>
-<div class="time-row" style="margin-top:9px"><span>إعادة ضبط المهام</span><strong id="resetCountdown">--:--:--</strong></div>
+</div>
+
+<aside class="spot" id="spot" data-active="0" aria-live="off">
+<div class="spot-top"><span class="spot-tag" id="spotLabel">أقرب فعالية</span><span class="spot-live">LIVE</span></div>
+<div class="spot-main"><div class="spot-icon" id="spotIcon">⏳</div><div><div class="spot-name" id="spotName">—</div><div class="spot-desc" id="spotDesc">جارٍ التحميل…</div></div></div>
+<div class="spot-count" id="spotCount" dir="ltr">--:--:--</div>
+<div class="spot-bar"><i id="spotBar"></i></div>
+<div class="spot-foot"><span id="spotAction">تبدأ بعد</span><span id="spotLocal"></span></div>
 </aside>
 </section>
 
-<section class="quick-actions">
-<button class="button" id="soundBtn" type="button" aria-pressed="false">🔕 فعّل التنبيه الصوتي</button>
-<button class="button" id="shareBtn" type="button">📤 شارك الموقع</button>
-<button class="button" id="installBtn" type="button">📲 أضفه لشاشتك</button>
-<span class="hint quick-note">التنبيهات الصوتية تعمل عند إبقاء الموقع مفتوحًا.</span>
+<!-- شريط الأوقات -->
+<section class="stat-strip" aria-label="الأوقات">
+<div class="stat"><div class="stat-label">🕒 الوقت عندك الآن</div><div class="stat-val" id="localClock">--:--:--</div><div class="stat-sub" id="localDate">جارٍ قراءة التاريخ…</div></div>
+<div class="stat"><div class="stat-label">🌎 وقت اللعبة (Pacific)</div><div class="stat-val" id="skyClock">--:--:--</div><div class="stat-sub">America/Los_Angeles</div></div>
+<div class="stat"><div class="stat-label">♻️ إعادة ضبط المهام</div><div class="stat-val sun" id="resetCountdown">--:--:--</div><div class="stat-sub">منتصف الليل بتوقيت اللعبة</div></div>
 </section>
 
+<!-- ===== الفعاليات ===== -->
 <section id="events">
-<div class="section-heading"><div><div class="section-kicker">LIVE EVENT TRACKER</div><h2>مواعيد الفعاليات</h2><p>العدّ التنازلي يتحدّث تلقائيًا كل ثانية حسب توقيت اللعبة.</p></div><span class="date-tag" id="skyDayTag">توقيت اللعبة · Pacific</span></div>
+<div class="sec-head"><div><div class="kicker">LIVE EVENT TRACKER</div><h2>مواعيد الفعاليات</h2><p>العدّ التنازلي يتحدّث تلقائيًا كل ثانية حسب توقيت اللعبة.</p></div><span class="date-tag" id="skyDayTag">توقيت اللعبة · Pacific</span></div>
 <div class="events-grid" id="eventsGrid" aria-live="polite"></div>
 </section>
 
-<!-- ===== قسم الشظية المتحطمة (جديد) ===== -->
-<section class="panel wide-panel" id="shard">
+<!-- ===== الشظية + المهام ===== -->
+<div class="grid-2 shard-quests">
+<section class="panel" id="shard" data-state="wait">
 <div class="panel-head">
-<div class="panel-title">
-<div class="panel-icon">💎</div>
-<div>
-<h2>الشظية المتحطمة</h2>
-<p>مكان الشظية اليوم، لونها، مكافأتها، والعدّاد التنازلي.</p>
+<div class="panel-title"><div class="panel-icon">💎</div><div><h2>الشظية المتحطمة</h2><p>مكان الشظية اليوم ولونها ومكافأتها.</p></div></div>
+<span class="date-tag" id="shardBadge" style="display:inline-block">بانتظار البيانات</span>
 </div>
+<div id="shardLoading" class="skeleton" style="padding:20px 0;text-align:center"><span class="loading-ring"></span> جارٍ تحميل بيانات الشظية…</div>
+<div id="shardContent" style="display:none">
+<div class="shard-grid">
+<div class="shard-cell"><div class="hint">العالم</div><div id="shardRealm">—</div></div>
+<div class="shard-cell"><div class="hint">الموقع</div><div id="shardMap">—</div></div>
+<div class="shard-cell"><div class="hint">اللون</div><div id="shardColor">—</div></div>
+<div class="shard-cell"><div class="hint">المكافأة</div><div id="shardReward">—</div></div>
 </div>
-<span class="date-tag" id="shardBadge">بانتظار البيانات</span>
+<div class="shard-timer">
+<div class="hint" id="shardCountdownLabel">العدّاد التنازلي حتى نهاية الشظية</div>
+<div id="shardCountdownTime" dir="ltr">--:--:--</div>
 </div>
-
-<div id="shardLoading" class="skeleton" style="padding:20px 0;text-align:center;">
-<span class="loading-ring"></span> جارٍ تحميل بيانات الشظية…
-</div>
-
-<div id="shardContent" style="display:none;">
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;">
-<div style="background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:13px;padding:13px 15px;">
-<div class="hint" style="margin-bottom:4px;">العالم</div>
-<div id="shardRealm" style="font-size:16px;font-weight:700;">—</div>
-</div>
-<div style="background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:13px;padding:13px 15px;">
-<div class="hint" style="margin-bottom:4px;">الموقع</div>
-<div id="shardMap" style="font-size:16px;font-weight:700;">—</div>
-</div>
-<div style="background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:13px;padding:13px 15px;">
-<div class="hint" style="margin-bottom:4px;">اللون</div>
-<div id="shardColor" style="font-size:16px;font-weight:700;">—</div>
-</div>
-<div style="background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:13px;padding:13px 15px;">
-<div class="hint" style="margin-bottom:4px;">المكافأة</div>
-<div id="shardReward" style="font-size:16px;font-weight:700;">—</div>
-</div>
-</div>
-
-<div style="margin-top:14px;padding:15px;border-radius:14px;background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);text-align:center;">
-<div class="hint" id="shardCountdownLabel" style="font-weight:600;color:var(--mint)">العدّاد التنازلي حتى نهاية الشظية</div>
-<div id="shardCountdownTime" dir="ltr" style="font:800 28px Manrope,sans-serif;letter-spacing:1px;margin-top:4px;color:#fff">--:--:--</div>
-</div>
-
-<div id="shardSchedule" style="margin-top:14px;display:grid;gap:8px;"></div>
+<div id="shardSchedule" style="margin-top:12px;display:grid;gap:8px"></div>
 </div>
 </section>
-<!-- ===== نهاية قسم الشظية ===== -->
 
-<div class="lower-grid">
 <section class="panel" id="quests">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">📜</div><div><h2>مهام اليوم</h2><p>علّم على كل مهمة تخلصها — التقدّم خلال الجلسة الحالية فقط.</p></div></div><span class="date-tag" id="questDate">جاري التحميل</span></div>
+<div class="panel-head">
+<div class="panel-title"><div class="panel-icon">📜</div><div><h2>مهام اليوم</h2><p>علّم على كل مهمة تخلصها — التقدّم خلال الجلسة فقط.</p></div></div>
+<div class="quest-head-side"><span class="date-tag" id="questDate">جاري التحميل</span><div class="ring" id="questRing" aria-hidden="true"><span id="questRingText">0%</span></div></div>
+</div>
 <div class="progress-meta"><span>إنجاز المهام</span><span id="questProgressText">0 من 4</span></div>
 <div class="progress"><div class="progress-bar" id="questProgressBar"></div></div>
 <div class="quest-list" id="questList"><div class="skeleton"><span class="loading-ring"></span> جارٍ تحميل مهام اليوم…</div></div>
 <div class="quest-footer"><span class="hint" id="questSourceLabel">المصدر: thatskyapplication</span><button class="button small" type="button" id="resetQuestsBtn">إلغاء تحديد المهام</button></div>
 </section>
+</div>
 
-<section class="panel" id="spirit">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">🕯️</div><div><h2>الروح المسافرة</h2><p>الروح الحالية وكم تحتاج من العملات.</p></div></div><span class="date-tag" id="spiritStatus">مزامنة المجتمع</span></div>
+<!-- ===== الروح المسافرة ===== -->
+<section class="panel" id="spirit" style="margin-top:18px">
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">🕯️</div><div><h2>الروح المسافرة</h2><p>الروح الحالية وكم تحتاج من العملات.</p></div></div><span class="date-tag" id="spiritStatus" style="display:inline-block">مزامنة المجتمع</span></div>
+<div class="spirit-layout">
+<div>
 <div class="spirit-art-wrap" id="spiritArtWrap"><div class="spirit-art-placeholder">✧<div><small>صورة الروح تظهر تلقائيًا عند توفرها</small></div></div></div>
 <div class="spirit-banner">
 <div class="spirit-overline"><span>✦</span><span id="spiritOverline">الروح الحالية</span></div>
@@ -527,18 +536,22 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <div class="spirit-dates" id="spiritDates">—</div>
 <div class="spirit-time" id="spiritCountdown">--:--:--</div>
 </div>
+</div>
+<div>
 <div class="cost-title">التكلفة المرجعية لشجرة الروح كاملة</div>
 <div class="cost-grid" id="spiritCosts"></div>
 <div class="cosmetic-list" id="cosmeticList"></div>
 <div class="spirit-location" id="spiritLocation"><strong>📍 وين تلقاها؟</strong><p>تظهر الروح المسافرة عادةً في البيت (Home) وقرية الطيور (Aviary Village)، بحسب تقدمك في اللعبة.</p></div>
 <p class="notice" id="spiritPriceNote">الأسعار مرجعية من مصادر مجتمعية. تأكد من شجرة الروح داخل اللعبة قبل الشراء.</p>
 <div class="status-strip"><span class="dot"></span><span id="spiritUpdated">تتم مزامنة الإعلانات المجتمعية بشكل دوري.</span></div>
-</section>
 </div>
+</div>
+</section>
 
-<div class="feature-grid" id="tools">
+<!-- ===== الأدوات ===== -->
+<div class="grid-2" id="tools">
 <section class="panel">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">🧮</div><div><h2>حاسبة الشموع</h2><p>احسب كم تحتاج عشان تلحق شجرة الروح.</p></div></div><span class="date-tag">حساب فوري</span></div>
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">🧮</div><div><h2>حاسبة الشموع</h2><p>احسب كم تحتاج عشان تلحق شجرة الروح.</p></div></div></div>
 <div class="calculator-fields">
 <label>شموعك الحالية<input id="candlesCurrent" type="number" min="0" step="1" value="0" inputmode="numeric"></label>
 <label>كم شمعة تجمع باليوم؟<input id="candlesPerDay" type="number" min="1" max="100" step="1" value="15" inputmode="numeric"></label>
@@ -549,47 +562,52 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 </section>
 
 <section class="panel">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">💝</div><div><h2>قائمة أمنيات الأرواح</h2><p>أضف أسماء الأرواح التي تنتظر عودتها؛ تبقى خلال الجلسة الحالية فقط.</p></div></div></div>
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">💝</div><div><h2>قائمة أمنيات الأرواح</h2><p>أضف الأرواح اللي تنتظر عودتها؛ تبقى خلال الجلسة فقط.</p></div></div></div>
 <form id="wishForm" class="wish-form"><label class="sr-only" for="wishInput">اسم الروح</label><input id="wishInput" type="text" maxlength="70" placeholder="اسم الروح بالإنجليزي أو العربي" autocomplete="off" required><button class="button primary" type="submit">أضف</button></form>
 <div class="wish-list" id="wishList"><p class="empty-state">القائمة فارغة. أضف اسم روح تبيها.</p></div>
 <div class="wish-footer"><button class="button small" id="wishNotifyBtn" type="button">🔔 تفعيل إشعارات المتصفح</button><span class="hint">القائمة مؤقتة خلال فتح الصفحة فقط.</span></div>
 </section>
 </div>
 
-<section class="panel wide-panel" id="timeline">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">📅</div><div><h2>المواسم والأحداث القادمة</h2><p>ملخص مستخرج من دليل المجتمع، غير رسمي.</p></div></div><span class="date-tag" id="timelineStatus">جاري التحميل</span></div>
+<!-- ===== المواسم ===== -->
+<section class="panel" id="timeline" style="margin-top:18px">
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">📅</div><div><h2>المواسم والأحداث القادمة</h2><p>ملخص من دليل المجتمع، غير رسمي.</p></div></div><span class="date-tag" id="timelineStatus" style="display:inline-block">جاري التحميل</span></div>
 <div class="timeline-grid" id="timelineGrid"><p class="empty-state">نحدّث جدول الأحداث عند تشغيل مهمة التحديث.</p></div>
 <p class="notice">مواعيد الأحداث الموسمية قد تتغير.</p>
 </section>
 
-<section class="panel wide-panel" id="news">
-<div class="panel-head"><div class="panel-title"><div class="panel-icon">📰</div><div><h2>آخر إعلانات Sky الرسمية</h2><p>من أخبار Steam الرسمية. اضغط على أي خبر لقراءته كاملًا.</p></div></div><span class="date-tag">يتم جلبها تلقائيًا</span></div>
+<!-- ===== الأخبار ===== -->
+<section class="panel" id="news" style="margin-top:18px">
+<div class="panel-head"><div class="panel-title"><div class="panel-icon">📰</div><div><h2>آخر إعلانات Sky الرسمية</h2><p>من أخبار Steam الرسمية. اضغط على أي خبر لقراءته كاملًا.</p></div></div><span class="date-tag" style="display:inline-block">يتم جلبها تلقائيًا</span></div>
 <div class="news-grid" id="newsGrid"><p class="empty-state">تظهر الإعلانات هنا بعد نجاح مزامنة الأخبار.</p></div>
 <div class="status-strip"><span class="dot"></span><span id="lastUpdated">آخر تحديث: ننتظر أول مزامنة</span></div>
-</section>
-
-<section>
-<div class="section-heading"><div><div class="section-kicker">MADE FOR SKYKIDS</div><h2>أشياء صغيرة، تفرق في جولتك</h2><p>مصمّم عشان تفتحه بسرعة من الكمبيوتر أو الجوال.</p></div></div>
-<div class="tips-grid">
-<article class="tip"><div class="tip-icon">⌁</div><div><h3>توقيتك المحلي</h3><p>نحسب المواعيد من توقيت اللعبة ونحوّلها إلى المنطقة الزمنية في جهازك.</p></div></article>
-<article class="tip"><div class="tip-icon">✓</div><div><h3>تابع إنجازك</h3><p>علّم على المهام خلال الجلسة الحالية فقط.</p></div></article>
-<article class="tip"><div class="tip-icon">⟳</div><div><h3>تحديث مجدول</h3><p>تتحقق مهمة سحابية من المهام والإعلانات دوريًا حتى لو كان جهازك مغلقًا.</p></div></article>
-</div>
 </section>
 </main>
 
 <footer class="footer">
 <div class="creator-credit">
 <img src="assets/creator.jpg" alt="𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒" class="creator-avatar" onerror="this.style.display='none'">
-<div>
-<div class="creator-name">𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div>
-<div class="creator-label">صنع من قبل 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div>
+<div><div class="creator-name">𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div><div class="creator-label">صنع من قبل 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div></div>
 </div>
-</div>
-<p><strong style="color:#c2d6df">سماء — حقوق 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒.</strong><br>غير تابع لـ thatgamecompany. معلومات الفعاليات والمهام والأرواح قابلة للتغيير؛ اللعبة والإعلانات الرسمية هي المرجع النهائي.</p>
+<div class="footer-meta">
+<p><strong style="color:#e6e4f7">سماء — حقوق 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒.</strong><br>غير تابع لـ thatgamecompany. معلومات الفعاليات والمهام والأرواح قابلة للتغيير؛ اللعبة والإعلانات الرسمية هي المرجع النهائي.</p>
 <div class="footer-links"><span>إعلانات اللعبة الرسمية</span><span>© 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</span></div>
+</div>
 </footer>
 </div>
+</div>
+
+<!-- التنقل: سفلي للجوال، جانبي للكمبيوتر -->
+<nav class="dock" aria-label="التنقل">
+<a href="#top" data-nav="top" data-label="الرئيسية" class="desk-only"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 10v10h14V10"/></svg><span class="dl">الرئيسية</span></a>
+<a href="#events" data-nav="events" data-label="الفعاليات"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="dl">الفعاليات</span></a>
+<a href="#shard" data-nav="shard" data-label="الشظية"><svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12"/></svg><span class="dl">الشظية</span></a>
+<a href="#quests" data-nav="quests" data-label="المهام"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1.2 1.2L6.8 5M3.5 12l1.2 1.2L6.8 11M3.5 18l1.2 1.2L6.8 17"/></svg><span class="dl">المهام</span></a>
+<a href="#spirit" data-nav="spirit" data-label="الروح"><svg viewBox="0 0 24 24"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z"/></svg><span class="dl">الروح</span></a>
+<a href="#tools" data-nav="tools" data-label="الأدوات"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2M8 16h2m4 0h2"/></svg><span class="dl">الأدوات</span></a>
+<a href="#news" data-nav="news" data-label="الأخبار" class="desk-only"><svg viewBox="0 0 24 24"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM18 8h2v10a2 2 0 0 1-2 2M8 8h7M8 12h7M8 16h4"/></svg><span class="dl">الأخبار</span></a>
+</nav>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <dialog id="installDialog" class="install-dialog">
 <div class="panel-head"><div><h2>أضف سماء إلى شاشتك</h2><p>اختصار سريع للموقع.</p></div><button class="button small" id="closeInstallDialog" type="button" aria-label="إغلاق">✕</button></div>
@@ -914,12 +932,14 @@ function renderShard(data) {
 const loading = $('shardLoading');
 const content = $('shardContent');
 const badge = $('shardBadge');
+const schedule = $('shardSchedule');
 if (!loading || !content) return;
 const s = data?.shard;
 if (!s) {
 loading.style.display = 'block';
 content.style.display = 'none';
 badge.textContent = 'بانتظار البيانات';
+if (schedule) schedule.innerHTML = '';
 return;
 }
 loading.style.display = 'none';
@@ -935,6 +955,29 @@ $('shardRealm').textContent = s.realm_ar || s.realm || '—';
 $('shardMap').textContent = s.map_ar || s.map || '—';
 $('shardColor').textContent = s.has_shard ? (s.is_red ? 'أحمر' : 'أسود') : '—';
 $('shardReward').textContent = (s.has_shard && s.reward_ac != null) ? `${s.reward_ac} شمعة` : '—';
+if (schedule) {
+if (s.has_shard && Array.isArray(s.occurrences) && s.occurrences.length) {
+const fmtT = (iso) => {
+try { return new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(iso)); }
+catch (_) { return '—'; }
+};
+const nowTs = Date.now();
+schedule.innerHTML = s.occurrences.map((occ, i) => {
+const startT = new Date(occ.start_utc).getTime();
+const endT = new Date(occ.end_utc).getTime();
+const active = nowTs >= startT && nowTs < endT;
+const bg = active ? 'rgba(255,184,107,.12)' : 'var(--glass-2)';
+const bd = active ? 'rgba(255,184,107,.4)' : 'var(--line)';
+const cl = active ? 'var(--sun)' : 'var(--muted)';
+return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;font-size:12.5px;background:${bg};border:1px solid ${bd}">
+<span style="color:${active?'var(--sun)':'var(--text)'};font-weight:${active?'700':'500'}">${active?'✦ ':''}الظهور ${i+1}</span>
+<span dir="ltr" style="color:${cl};font-variant-numeric:tabular-nums">${fmtT(occ.start_utc)} — ${fmtT(occ.end_utc)}</span>
+</div>`;
+}).join('');
+} else {
+schedule.innerHTML = '';
+}
+}
 }
 function renderShardCountdown(now) {
 const s = liveData?.shard;
@@ -1031,6 +1074,60 @@ if(worker && worker.scriptURL.endsWith('/sw.js')) reg.update().catch(()=>{});
 }).catch(()=>{});
 if('caches' in window) caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('sama-sky-')).map(key=>caches.delete(key)))).catch(()=>{});
 }
+})();
+</script>
+
+<script>
+/* إضافات الواجهة فقط (لا تغيّر منطق البيانات): أقرب فعالية، حلقة المهام، حالة الشظية، تمييز القسم الحالي */
+(() => {
+'use strict';
+const $ = (id) => document.getElementById(id);
+const parse = (t) => { const m = String(t||'').match(/(?:(\d+)ي\s*)?(\d+):(\d+):(\d+)/); return m ? (+m[1]||0)*86400 + (+m[2])*3600 + (+m[3])*60 + (+m[4]) : null; };
+function mirror(key, val){ document.querySelectorAll('[data-mirror="'+key+'"]').forEach(el => { el.textContent = val; }); }
+function update(){
+  try{
+    const cards = [...document.querySelectorAll('#eventsGrid .event-card')];
+    let best = null;
+    for (const c of cards){
+      const left = parse(c.querySelector('.event-count')?.textContent);
+      if (left == null) continue;
+      const active = c.querySelector('.event-status')?.classList.contains('active') || false;
+      const score = (active ? 0 : 1e7) + left;
+      if (!best || score < best.score) best = {c, left, active, score};
+    }
+    if (best){
+      const c = best.c, spot = $('spot');
+      const name = c.querySelector('h3')?.textContent || '—';
+      spot.dataset.active = best.active ? '1' : '0';
+      $('spotIcon').textContent = c.querySelector('.event-icon')?.textContent || '⏳';
+      $('spotName').textContent = name;
+      $('spotDesc').textContent = c.querySelector('.event-desc')?.textContent || '';
+      $('spotCount').textContent = c.querySelector('.event-count')?.textContent || '--:--:--';
+      $('spotAction').textContent = c.querySelector('.event-action')?.textContent || '';
+      $('spotLocal').textContent = c.querySelector('.event-local-time')?.textContent || '';
+      $('spotLabel').textContent = best.active ? 'فعّالة الآن' : 'أقرب فعالية';
+      const pct = best.active ? (best.left / 600) : (1 - Math.min(best.left, 7200) / 7200);
+      $('spotBar').style.width = Math.max(0, Math.min(100, pct * 100)).toFixed(1) + '%';
+      mirror('spotName', (best.active ? '● ' : '') + name);
+      mirror('spotCount', $('spotCount').textContent);
+    }
+    const w = parseFloat($('questProgressBar')?.style.width) || 0;
+    $('questRing')?.style.setProperty('--p', w);
+    if ($('questRingText')) $('questRingText').textContent = Math.round(w) + '%';
+    const b = $('shardBadge')?.textContent || '', sh = $('shard');
+    if (sh) sh.dataset.state = b.includes('🔴') ? 'red' : b.includes('⚫') ? 'black' : b.includes('لا توجد') ? 'none' : 'wait';
+  }catch(e){}
+}
+update(); setInterval(update, 1000);
+/* تمييز القسم الحالي في شريط التنقل */
+try{
+  const links = [...document.querySelectorAll('.dock a[data-nav]')];
+  const map = new Map(); links.forEach(a => { const s = document.getElementById(a.dataset.nav); if (s) map.set(s, a); });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting){ links.forEach(l => l.classList.remove('active')); map.get(en.target)?.classList.add('active'); } });
+  }, {rootMargin:'-35% 0px -55% 0px'});
+  map.forEach((a, s) => io.observe(s));
+}catch(e){}
 })();
 </script>
 </body>
