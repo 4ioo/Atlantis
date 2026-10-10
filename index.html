@@ -42,7 +42,7 @@
 <div class="eyebrow"><span class="spark">✧</span> كل اللي تحتاجه في سكاي، بمكان واحد</div>
 <h1>لا تفوّت ولا لحظة<br><span>في سماء سكاي.</span></h1>
 <p>مؤقّتات الفعاليات، مهام اليوم، والروح المسافرة وتكاليفها — بتوقيت جهازك، عشان تدخل اللعبة وأنت عارف وش تسوي.</p>
-<div class="hero-actions"><a class="button primary" href="#events">⏱️ مواعيد الفعاليات</a><a class="button" href="#quests">☼ مهام اليوم</a><a class="button" href="#tools">🕯️ حاسبة الشموع</a></div>
+<div class="hero-actions"><a class="button primary" href="#events">⏱️ مواعيد الفعاليات</a><a class="button" href="#shard">💎 الشظية المتحطمة</a><a class="button" href="#quests">☼ مهام اليوم</a><a class="button" href="#tools">🕯️ حاسبة الشموع</a></div>
 </div>
 <aside class="time-panel">
 <div class="time-title">الوقت عندك الآن</div>
@@ -65,6 +65,57 @@
 <div class="section-heading"><div><div class="section-kicker">LIVE EVENT TRACKER</div><h2>مواعيد الفعاليات</h2><p>العدّ التنازلي يتحدّث تلقائيًا كل ثانية حسب توقيت اللعبة.</p></div><span class="date-tag" id="skyDayTag">توقيت اللعبة · Pacific</span></div>
 <div class="events-grid" id="eventsGrid" aria-live="polite"></div>
 </section>
+
+<!-- ===== قسم الشظية المتحطمة (جديد) ===== -->
+<section class="panel wide-panel" id="shard">
+<div class="panel-head">
+<div class="panel-title">
+<div class="panel-icon">💎</div>
+<div>
+<h2>الشظية المتحطمة</h2>
+<p>مكان الشظية اليوم، لونها، مكافأتها، والعدّاد التنازلي.</p>
+</div>
+</div>
+<span class="date-tag" id="shardBadge">بانتظار البيانات</span>
+</div>
+
+<div id="shardLoading" class="skeleton" style="padding:20px 0;text-align:center;">
+<span class="loading-ring"></span> جارٍ تحميل بيانات الشظية…
+</div>
+
+<div id="shardContent" style="display:none;">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;">
+<div style="background:#ffffff06;border:1px solid #ffffff12;border-radius:13px;padding:13px 15px;">
+<div class="hint" style="margin-bottom:4px;">العالم</div>
+<div id="shardRealm" style="font-size:16px;font-weight:700;">—</div>
+</div>
+<div style="background:#ffffff06;border:1px solid #ffffff12;border-radius:13px;padding:13px 15px;">
+<div class="hint" style="margin-bottom:4px;">الموقع</div>
+<div id="shardMap" style="font-size:16px;font-weight:700;">—</div>
+</div>
+<div style="background:#ffffff06;border:1px solid #ffffff12;border-radius:13px;padding:13px 15px;">
+<div class="hint" style="margin-bottom:4px;">اللون</div>
+<div id="shardColor" style="font-size:16px;font-weight:700;">—</div>
+</div>
+<div style="background:#ffffff06;border:1px solid #ffffff12;border-radius:13px;padding:13px 15px;">
+<div class="hint" style="margin-bottom:4px;">المكافأة</div>
+<div id="shardReward" style="font-size:16px;font-weight:700;">—</div>
+</div>
+</div>
+
+<div style="margin-top:14px;padding:15px;border-radius:14px;background:#7ee7d20b;border:1px solid #7ee7d226;text-align:center;">
+<div class="hint" id="shardCountdownLabel" style="font-weight:600;">العدّاد التنازلي حتى نهاية الشظية</div>
+<div id="shardCountdownTime" dir="ltr" style="font:800 28px Manrope,sans-serif;letter-spacing:1px;margin-top:4px;">--:--:--</div>
+</div>
+
+<div id="shardSchedule" style="margin-top:14px;display:grid;gap:8px;"></div>
+</div>
+
+<p class="notice" style="margin-top:12px;">
+البيانات محسوبة من خوارزمية مجتمعية مفتوحة المصدر (Sky Shards by Plutoy). قد تختلف قليلًا عن اللعبة.
+</p>
+</section>
+<!-- ===== نهاية قسم الشظية ===== -->
 
 <div class="lower-grid">
 <section class="panel" id="quests">
@@ -240,7 +291,7 @@ if (resetTarget === null || resetTarget <= now.getTime()) resetTarget = getNextR
 $('resetCountdown').textContent = countdown(resetTarget-now.getTime());
 const pt = dateParts(now,PT);
 $('skyDayTag').textContent = `وقت اللعبة · ${pt.year}-${pt.month}-${pt.day}`;
-renderEvents(now); renderSpiritCountdown(now); checkWishAlerts(now);
+renderEvents(now); renderSpiritCountdown(now); checkWishAlerts(now); renderShardCountdown(now);
 }
 function toast(message) {
 $('toast').textContent=message; $('toast').classList.add('show');
@@ -471,6 +522,58 @@ const key=`${spirit.name}|${spirit.start_utc}`;if(key===lastWishAlertKey)return;
 lastWishAlertKey=key;toast(`💝 الروح اللي في قائمتك موجودة الآن: ${matched}`);
 if('Notification' in window&&Notification.permission==='granted'){try{new Notification('روح من قائمة أمنياتك موجودة!',{body:`${spirit.name_ar||spirit.name} متاحة الآن.`})}catch(e){}}
 }
+/* ===== قسم الشظية (جديد) — بانتظار بيانات Python ===== */
+function renderShard(data) {
+const loading = $('shardLoading');
+const content = $('shardContent');
+const badge = $('shardBadge');
+if (!loading || !content) return;
+const s = data?.shard;
+if (!s) {
+loading.style.display = 'block';
+content.style.display = 'none';
+badge.textContent = 'بانتظار البيانات';
+return;
+}
+loading.style.display = 'none';
+content.style.display = 'block';
+if (!s.has_shard) {
+badge.textContent = 'لا توجد شظية اليوم';
+} else if (s.is_red) {
+badge.textContent = '🔴 شظية حمراء';
+} else {
+badge.textContent = '⚫ شظية سوداء';
+}
+$('shardRealm').textContent = s.realm_ar || s.realm || '—';
+$('shardMap').textContent = s.map_ar || s.map || '—';
+$('shardColor').textContent = s.has_shard ? (s.is_red ? 'أحمر' : 'أسود') : '—';
+$('shardReward').textContent = (s.has_shard && s.reward_ac != null) ? `${s.reward_ac} شمعة` : '—';
+}
+function renderShardCountdown(now) {
+const s = liveData?.shard;
+if (!s || !s.has_shard || !Array.isArray(s.occurrences) || !s.occurrences.length) return;
+const timeEl = $('shardCountdownTime');
+const labelEl = $('shardCountdownLabel');
+if (!timeEl || !labelEl) return;
+const t = now.getTime();
+let active = null, upcoming = null;
+for (const occ of s.occurrences) {
+const start = new Date(occ.start_utc).getTime();
+const end = new Date(occ.end_utc).getTime();
+if (t >= start && t < end) { active = { start, end }; break; }
+if (t < start && (!upcoming || start < upcoming.start)) upcoming = { start, end };
+}
+if (active) {
+labelEl.textContent = 'العدّاد التنازلي حتى نهاية الشظية الحالية';
+timeEl.textContent = countdown(active.end - t);
+} else if (upcoming) {
+labelEl.textContent = 'الشظية القادمة تبدأ بعد';
+timeEl.textContent = countdown(upcoming.start - t);
+} else {
+labelEl.textContent = 'انتهت شظايا اليوم';
+timeEl.textContent = '—';
+}
+}
 $('soundBtn').addEventListener('click',()=>{soundEnabled=!soundEnabled;updateSoundButton();if(soundEnabled)playEventTone();toast(soundEnabled?'تم تفعيل التنبيه.':'تم إيقاف التنبيه.')});
 $('shareBtn').addEventListener('click',async()=>{try{if(navigator.share){await navigator.share({title:document.title,text:'مواعيد سكاي والمهام اليومية',url:location.href})}else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);toast('تم نسخ رابط الموقع.')}else{toast('انسخ رابط الموقع.')}}catch(e){if(e?.name!=='AbortError')toast('تعذّرت المشاركة.')}});
 $('installBtn').addEventListener('click',async()=>{if(deferredInstallPrompt){deferredInstallPrompt.prompt();try{await deferredInstallPrompt.userChoice}catch(e){}deferredInstallPrompt=null}else if($('installDialog').showModal){$('installDialog').showModal()}else{toast('استخدم قائمة المتصفح.');}});
@@ -481,7 +584,7 @@ $('wishNotifyBtn').addEventListener('click',async()=>{if(!('Notification' in win
 ['candlesCurrent','candlesPerDay','candlesTarget'].forEach(id=>$(id).addEventListener('input',updateCandleCalculator));
 function renderAllData(data){
 liveData=data;
-renderQuests(data); renderSpirit(data); renderTimeline(data); renderNews(data); updateCandleCalculator();
+renderQuests(data); renderSpirit(data); renderTimeline(data); renderNews(data); updateCandleCalculator(); renderShard(data);
 const last=data?.last_updated_utc ? new Date(data.last_updated_utc) : null;
 $('lastUpdated').textContent=last && !Number.isNaN(last.getTime())
 ? `آخر مزامنة للبيانات: ${new Intl.DateTimeFormat(AR_LOCALE,{timeZone:LOCAL_TZ,dateStyle:'medium',timeStyle:'short'}).format(last)}`
