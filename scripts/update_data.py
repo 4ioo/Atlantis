@@ -277,7 +277,9 @@ def update_quests(doc, now_utc):
             print(f"WARN: fallback failed: {fallback_exc}",file=sys.stderr)
             return False
     date_pt=quest_date or get_pt_date(now_utc).isoformat()
-    changed=(old_quest_date != date_pt or old_quest_list != quests or doc.get("quest_data_source") != chosen_source)
+    old_ar = doc.get("daily_quests_ar", [])
+    needs_retranslate = (not old_ar) or any(not has_arabic(a) for a in old_ar if a)
+    changed=(old_quest_date != date_pt or old_quest_list != quests or doc.get("quest_data_source") != chosen_source or needs_retranslate)
     doc["daily_quests_date_pacific"]=date_pt
     doc["daily_quests_en"]=quests
     doc["daily_quests_ar"]=[translate_quest(q) for q in quests]
