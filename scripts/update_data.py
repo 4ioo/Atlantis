@@ -163,6 +163,18 @@ def translate_places(text):
         text = text.replace(en, ar)
     return text
 
+def translate_phrase(text):
+    """Translate a full phrase via Google, then fix place names."""
+    if not text:
+        return ""
+    # إذا فيه عربي أصلاً، بس نصلح الأسماء
+    if has_arabic(text):
+        return translate_places(text)
+    # ترجم الجملة كاملة عبر Google
+    translated = translate_short(text, max_len=300)
+    # طبّق قاموس الأماكن (لتصحيح أي اسم بقي إنجليزي)
+    return translate_places(translated)
+
 def translate_quest(text):
     # 1) قاموس الترجمة الجاهزة
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
@@ -178,35 +190,33 @@ def translate_quest(text):
     m=re.match(r"^Use expressions?$", text, re.I)
     if m: return "استخدم التعابير"
     m=re.match(r"^Meet up with (.+)$", text, re.I)
-    if m: return "التقِ بـ " + translate_places(m.group(1))
+    if m: return "التقِ بـ " + translate_phrase(m.group(1))
     m=re.match(r"^Meet (.+)$", text, re.I)
-    if m: return "التقِ بـ " + translate_places(m.group(1))
+    if m: return "التقِ بـ " + translate_phrase(m.group(1))
     m=re.match(r"^Meditate (?:at|by|near) (?:the )?(.+)$", text, re.I)
-    if m: return "تأمّل عند " + translate_places(m.group(1))
+    if m: return "تأمّل عند " + translate_phrase(m.group(1))
     m=re.match(r"^Visit (?:the )?(.+)$", text, re.I)
-    if m: return "زُر " + translate_places(m.group(1))
+    if m: return "زُر " + translate_phrase(m.group(1))
     m=re.match(r"^Admire (?:the )?(.+)$", text, re.I)
-    if m: return "تأمّل " + translate_places(m.group(1))
+    if m: return "تأمّل " + translate_phrase(m.group(1))
     m=re.match(r"^Find (?:the )?(.+)$", text, re.I)
-    if m: return "ابحث عن " + translate_places(m.group(1))
+    if m: return "ابحث عن " + translate_phrase(m.group(1))
     m=re.match(r"^Catch (?:the )?(.+)$", text, re.I)
-    if m: return "التقط " + translate_places(m.group(1))
+    if m: return "التقط " + translate_phrase(m.group(1))
     m=re.match(r"^Relive (?:the )?(.+?)'?s memory(?: in (.+))?$", text, re.I)
     if m:
-        place = f" في {translate_places(m.group(2))}" if m.group(2) else ""
+        place = f" في {translate_phrase(m.group(2))}" if m.group(2) else ""
         return f"عِش ذكرى {m.group(1)} من جديد{place}"
     m=re.match(r"^Revisit (?:the )?(.+)$", text, re.I)
-    if m: return "عُد إلى " + translate_places(m.group(1))
+    if m: return "عُد إلى " + translate_phrase(m.group(1))
     m=re.match(r"^Hug (?:a )?(.+)$", text, re.I)
-    if m: return "عانق " + translate_places(m.group(1))
+    if m: return "عانق " + translate_phrase(m.group(1))
     m=re.match(r"^Send a gift(?: of light)? to (?:a )?friend$", text, re.I)
     if m: return "أرسل هدية نور إلى صديق"
     m=re.match(r"^Take a (.+)$", text, re.I)
-    if m: return "خُذ " + translate_places(m.group(1))
-    # 3) إذا ما لقينا نمط → Google Translate
-    translated = translate_short(text, max_len=200)
-    # نطبق قاموس الأماكن على الترجمة (في حال الأسماء بقيت إنجليزية)
-    return translated
+    if m: return "خُذ " + translate_phrase(m.group(1))
+    # 3) إذا ما لقينا نمط → Google Translate على النص كامل
+    return translate_phrase(text)
 
 def parse_daily_guide_quests(raw):
     parser = TextExtractor()
