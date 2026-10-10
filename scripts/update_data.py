@@ -116,6 +116,25 @@ PLACE_TRANSLATIONS = {
     "Meditating Monastic": "الراهب المتأمل",
 }
 
+# أسماء الأماكن الرئيسية (للتعرف عليها واستخراجها)
+MAIN_LOCATIONS = [
+    "Vault of Knowledge",
+    "Hidden Forest",
+    "Golden Wasteland",
+    "Valley of Triumph",
+    "Daylight Prairie",
+    "Sanctuary Islands",
+    "Prairie Village",
+    "Temple of the Prairie",
+    "Temple of the Vault",
+    "Aviary Village",
+    "Village of Dreams",
+    "Cave of Prophecy",
+    "Forgotten Ark",
+    "Starlight Desert",
+    "Eye of Eden",
+]
+
 class TextExtractor(HTMLParser):
     def __init__(self):
         super().__init__(); self.parts=[]
@@ -167,18 +186,30 @@ def translate_phrase(text):
     """Translate a full phrase via Google, then fix place names."""
     if not text:
         return ""
-    # إذا فيه عربي أصلاً، بس نصلح الأسماء
     if has_arabic(text):
         return translate_places(text)
-    # ترجم الجملة كاملة عبر Google
     translated = translate_short(text, max_len=300)
-    # طبّق قاموس الأماكن (لتصحيح أي اسم بقي إنجليزي)
     return translate_places(translated)
 
+def extract_location(text):
+    """Extract the location name in English from a quest text."""
+    if not text:
+        return ""
+    # ابحث عن اسم مكان رئيسي معروف داخل النص
+    for place in MAIN_LOCATIONS:
+        if place in text:
+            return place
+    # لو ما لقينا مكان رئيسي، نحاول نلقط الأنماط الشائعة
+    m = re.search(r"\bin\s+(?:the\s+)?([A-Z][A-Za-z' ]+(?:Village|Temple|Prairie|Forest|Islands|Vault|Wasteland|Valley|Cave|Ark|Desert|Eden))", text)
+    if m:
+        return m.group(1).strip()
+    m = re.search(r"\b(?:at|by|near)\s+(?:the\s+)?([A-Z][A-Za-z' ]+(?:Temple|Village|Prairie|Forest|Islands|Vault|Wasteland|Valley|Cave|Ark|Desert|Eden))", text)
+    if m:
+        return m.group(1).strip()
+    return ""
+
 def translate_quest(text):
-    # 1) قاموس الترجمة الجاهزة
     if text in QUEST_TRANSLATIONS: return QUEST_TRANSLATIONS[text]
-    # 2) أنماط شائعة
     m=re.match(r"^Collect (\d+) pieces? of [Ll]ight$", text)
     if m: return f"اجمع {m.group(1)} قطعة من الضوء"
     m=re.match(r"^Light (\d+) candles?$", text, re.I)
@@ -215,7 +246,6 @@ def translate_quest(text):
     if m: return "أرسل هدية نور إلى صديق"
     m=re.match(r"^Take a (.+)$", text, re.I)
     if m: return "خُذ " + translate_phrase(m.group(1))
-    # 3) إذا ما لقينا نمط → Google Translate على النص كامل
     return translate_phrase(text)
 
 def parse_daily_guide_quests(raw):
@@ -293,6 +323,7 @@ def update_quests(doc, now_utc):
     doc["daily_quests_date_pacific"]=date_pt
     doc["daily_quests_en"]=quests
     doc["daily_quests_ar"]=[translate_quest(q) for q in quests]
+    doc["daily_quests_locations"]=[extract_location(q) for q in quests]
     doc["quest_source"]=guide_url
     doc["quest_api_source"]=url
     doc["quest_data_source"]=chosen_source
@@ -609,7 +640,6 @@ def update_spirit(doc, now_utc):
     if image_url:
         spirit["image_url"] = image_url
 
-    # حساب التكاليف تلقائيًا
     prices_info = None
     if spirit_guid:
         try:
@@ -623,7 +653,6 @@ def update_spirit(doc, now_utc):
             spirit["cosmetics"] = prices_info["cosmetics"]
         spirit["prices_note"] = "التكاليف محسوبة تلقائيًا من شجرة الروح في بيانات المجتمع. قد تختلف التفاصيل قليلًا."
 
-    # نقل البيانات القديمة (لنفس الروح) إذا لم نحصل على قيم جديدة
     if old_spirit.get("name") == spirit_name:
         for key in ("prices", "cosmetics", "prices_note", "location_ar", "image_path"):
             if old_spirit.get(key) and key not in spirit:
