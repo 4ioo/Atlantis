@@ -328,10 +328,27 @@ input::placeholder{color:#5b6488}
 .news-full{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;line-height:2;white-space:pre-wrap;word-wrap:break-word;max-height:420px;overflow-y:auto;color:var(--text)}
 
 .footer{margin-top:44px;padding-top:6px}
-.creator-credit{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;padding:22px;border-radius:var(--r-lg);background:radial-gradient(60% 140% at 50% 0%,rgba(255,184,107,.16),transparent 70%),var(--glass);border:1px solid var(--line)}
-.creator-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid var(--sun);box-shadow:0 0 30px rgba(255,184,107,.45)}
-.creator-name{font:800 18px var(--f-num);letter-spacing:2px;text-align:center;background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.creator-label{font-size:12px;color:var(--muted);text-align:center;margin-top:2px}
+.creator-credit{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:44px;padding:0;background:none;border:none}
+.creator-card{position:relative;display:flex;align-items:center;gap:14px;padding:20px 22px;border-radius:22px;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s}
+.creator-card:hover{transform:translateY(-4px)}
+.creator-card.owner{background:radial-gradient(90% 130% at 100% 0%,rgba(255,184,107,.24),transparent 65%),var(--glass);border:1px solid rgba(255,212,138,.35);box-shadow:0 10px 36px -10px rgba(255,184,107,.4)}
+.creator-card.owner:hover{border-color:rgba(255,212,138,.6);box-shadow:0 14px 40px -10px rgba(255,184,107,.55)}
+.creator-card.co{background:radial-gradient(90% 130% at 0% 0%,rgba(255,143,188,.28),transparent 65%),radial-gradient(80% 120% at 100% 100%,rgba(216,165,255,.2),transparent 60%),var(--glass);border:1px solid rgba(255,168,204,.45);box-shadow:0 10px 36px -10px rgba(255,143,188,.5)}
+.creator-card.co:hover{border-color:rgba(255,168,204,.75);box-shadow:0 14px 40px -10px rgba(255,143,188,.65)}
+.creator-card.co::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.06) 50%,transparent 70%);pointer-events:none}
+.creator-avatar{width:66px;height:66px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.creator-card.owner .creator-avatar{border:2.5px solid var(--sun);box-shadow:0 0 28px rgba(255,184,107,.55),0 0 0 4px rgba(255,184,107,.1)}
+.creator-card.co .creator-avatar{border:2.5px solid #ff9ec7;box-shadow:0 0 28px rgba(255,158,199,.7),0 0 0 4px rgba(255,158,199,.15)}
+.creator-info{min-width:0;flex:1}
+.creator-name{font:800 19px var(--f-num);letter-spacing:2px;line-height:1.2}
+.creator-card.owner .creator-name{background:var(--sunset);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.creator-card.co .creator-name{background:linear-gradient(135deg,#ffd1e6 0%,#ff9ec7 40%,#d8a5ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.creator-label{font-size:11.5px;color:var(--muted);margin-top:3px}
+.creator-card.co .creator-label{color:#ffb8d9}
+.creator-badge{position:absolute;top:10px;inset-inline-end:12px;font-size:18px;opacity:.9;filter:drop-shadow(0 0 8px rgba(255,255,255,.2))}
+.creator-card.co .creator-badge{animation:pulse-heart 2s ease-in-out infinite;font-size:20px}
+@keyframes pulse-heart{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,158,199,.5))}50%{transform:scale(1.18);filter:drop-shadow(0 0 14px rgba(255,158,199,.9))}}
+.creator-card.co::after{content:"";position:absolute;bottom:-40px;inset-inline-end:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(255,158,199,.28),transparent 70%);pointer-events:none;filter:blur(20px)}
 .footer-meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 4px 10px;font-size:12px;color:var(--muted)}
 .footer-meta p{margin:0;max-width:680px;line-height:2}
 .footer-links{display:flex;gap:14px;flex-wrap:wrap}
@@ -401,7 +418,10 @@ input::placeholder{color:#5b6488}
   .calculator-fields{grid-template-columns:1fr}
   .calculator-fields label:last-child{grid-column:auto}
   .timeline-grid,.news-grid{grid-template-columns:1fr}
-  .creator-credit{padding:16px}
+  .creator-credit{grid-template-columns:1fr}
+  .creator-card{padding:16px 18px}
+  .creator-avatar{width:56px;height:56px}
+  .creator-name{font-size:17px}
   .footer-meta{display:block}
   .footer-links{margin-top:10px}
 }
@@ -435,6 +455,8 @@ input::placeholder{color:#5b6488}
 <div class="hero-actions quick-actions">
 <button class="button primary" id="soundBtn" type="button" aria-pressed="false">🔕 فعّل التنبيه الصوتي</button>
 <button class="button" id="shareBtn" type="button">📤 شارك الموقع</button>
+<a class="button" href="https://www.tiktok.com/@yurlantis" target="_blank" rel="noopener">🎵 تيك توك</a>
+<a class="button" href="https://discord.gg/JB6aMXvfAw" target="_blank" rel="noopener">💬 دسكورد</a>
 <button class="button" id="installBtn" type="button">📲 أضفه لشاشتك</button>
 </div>
 </div>
@@ -552,8 +574,22 @@ input::placeholder{color:#5b6488}
 
 <footer class="footer">
 <div class="creator-credit">
+<div class="creator-card owner">
+<span class="creator-badge">👑</span>
 <img src="assets/creator.jpg" alt="𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒" class="creator-avatar" onerror="this.style.display='none'">
-<div><div class="creator-name">𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div><div class="creator-label">صنع من قبل 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div></div>
+<div class="creator-info">
+<div class="creator-name">𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒</div>
+<div class="creator-label">مالك الموقع · Owner</div>
+</div>
+</div>
+<div class="creator-card co">
+<span class="creator-badge">💖</span>
+<img src="assets/yurimi.jpg" alt="Yurimi" class="creator-avatar" onerror="this.style.display='none'">
+<div class="creator-info">
+<div class="creator-name">Yurimi</div>
+<div class="creator-label">شريكة الرحلة · Co-Owner</div>
+</div>
+</div>
 </div>
 <div class="footer-meta">
 <p><strong style="color:#e6e4f7">سماء — حقوق 𝐀𝐓𝐋𝐀𝐍𝐓𝐈𝐒.</strong><br>غير تابع لـ thatgamecompany. معلومات الفعاليات والمهام والأرواح قابلة للتغيير؛ اللعبة والإعلانات الرسمية هي المرجع النهائي.</p>
