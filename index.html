@@ -750,53 +750,135 @@ $('toast').textContent=message; $('toast').classList.add('show');
 clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3400);
 }
 function localDateKey() { const p=dateParts(new Date(),PT); return `${p.year}-${p.month}-${p.day}`; }
+
+/* ===== فك كيانات HTML ===== */
+function decodeEntities(str){
+  if(!str) return '';
+  const txt = document.createElement('textarea');
+  txt.innerHTML = String(str);
+  return txt.value;
+}
+
+/* ===== ترجمة المهام — أنماط موسّعة ===== */
 function arabicQuest(text) {
-const original=String(text||'').trim();
-const exact={'Wave to a player':'لوّح للاعب','Find the candles at the end of the rainbow in the Vault of Knowledge':'اعثر على الشموع عند نهاية قوس قزح في قبو المعرفة','Catch the wandering lights in the Upper Vault':'التقط الأضواء المتجوّلة في الجزء العلوي من قبو المعرفة','Meditate at the Temple of the Vault':'تأمّل عند معبد قبو المعرفة','Collect 30 pieces of light':'اجمع 30 قطعة من الضوء','Spend time with a friend':'اقضِ بعض الوقت مع صديق','Hug a friend':'عانق صديقًا','Hold hands with a friend':'أمسك بيد صديق','Send a gift of light to a friend':'أرسل هدية نور إلى صديق','Make a new acquaintance':'تعرّف على لاعب جديد'};
+const original = String(text || '').trim();
+const exact = {
+  'Wave to a player':'لوّح للاعب',
+  'Collect 30 pieces of light':'اجمع 30 قطعة من الضوء',
+  'Spend time with a friend':'اقضِ بعض الوقت مع صديق',
+  'Hug a friend':'عانق صديقًا',
+  'Hold hands with a friend':'أمسك بيد صديق',
+  'Send a gift of light to a friend':'أرسل هدية نور إلى صديق',
+  'Make a new acquaintance':'تعرّف على لاعب جديد',
+  'Find the candles at the end of the rainbow in the Vault of Knowledge':'اعثر على الشموع عند نهاية قوس قزح في قبو المعرفة',
+  'Catch the wandering lights in the Upper Vault':'التقط الأضواء المتجوّلة في الجزء العلوي من قبو المعرفة',
+  'Meditate at the Temple of the Vault':'تأمّل عند معبد قبو المعرفة'
+};
 if(exact[original]) return {ar:exact[original],en:original};
-let m=original.match(/^Meditate at (?:the )?(.+)$/i); if(m) return {ar:`تأمّل عند ${m[1]}`,en:original};
-m=original.match(/^Relive (?:the )?(.+?)'?s memory(?: in (.+))?$/i); if(m) return {ar:`عِش ذكرى ${m[1]} من جديد${m[2]?` في ${m[2]}`:''}`,en:original};
-m=original.match(/^Collect (\d+) pieces? of light$/i); if(m) return {ar:`اجمع ${m[1]} قطعة من الضوء`,en:original};
-m=original.match(/^Visit (?:the )?(.+)$/i); if(m) return {ar:`زُر ${m[1]}`,en:original};
+let m;
+m = original.match(/^Catch the light in (?:the )?(.+)$/i);
+if(m) return {ar:`التقط الضوء في ${m[1]}`,en:original};
+m = original.match(/^Relive\s+(?:the\s+)?(.+?)(?:'s\s+memory)?(?:\s+in\s+(?:the\s+)?(.+))?$/i);
+if(m) return {ar:`عِش ذكرى ${m[1].trim()} من جديد${m[2]?` في ${m[2]}`:''}`,en:original};
+m = original.match(/^Tidy up\s+(?:the\s+)?(.+?)(?:\s+in\s+(?:the\s+)?(.+))?$/i);
+if(m) return {ar:`رتّب ${m[1].trim()}${m[2]?` في ${m[2]}`:''}`,en:original};
+m = original.match(/^Meet up with\s+(.+?)(?:\s+in\s+(?:the\s+)?(.+))?$/i);
+if(m) return {ar:`التقِ بـ ${m[1].trim()}${m[2]?` في ${m[2]}`:''}`,en:original};
+m = original.match(/^Meditate at (?:the )?(.+)$/i);
+if(m) return {ar:`تأمّل عند ${m[1]}`,en:original};
+m = original.match(/^Collect (\d+) pieces? of light$/i);
+if(m) return {ar:`اجمع ${m[1]} قطعة من الضوء`,en:original};
+m = original.match(/^Visit (?:the )?(.+)$/i);
+if(m) return {ar:`زُر ${m[1]}`,en:original};
+m = original.match(/^Find (?:the )?(.+)$/i);
+if(m) return {ar:`اعثر على ${m[1]}`,en:original};
 return {ar:original,en:'النص الأصلي من المصدر'};
 }
+
 function questIcon(text) {
 const q=String(text||'').toLowerCase();
 if(/rainbow|candle|light|collect/.test(q)) return '🕯️';
 if(/meditat|temple|shrine/.test(q)) return '🧘';
-if(/wave|bow|hug|hand|friend|player|acquaintance/.test(q)) return '👋';
+if(/wave|bow|hug|hand|friend|player|acquaintance|meet up/.test(q)) return '👋';
 if(/spirit|relive|memory|muralist/.test(q)) return '✨';
 if(/visit|admire|sapling|sanctuary|realm/.test(q)) return '📍';
 return '🌟';
 }
+
+/* ===== ترجمة احتياطية عبر MyMemory ===== */
+const questTrCache = new Map();
+async function translateQuestAuto(text){
+  const key = String(text || '').trim();
+  if(!key) return '';
+  if(questTrCache.has(key)) return questTrCache.get(key);
+  try{
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(key) + '&langpair=en|ar';
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    let t = data?.responseData?.translatedText || '';
+    if(t && !/^MYMEMORY WARNING/i.test(t) && /[\u0600-\u06FF]/.test(t)){
+      questTrCache.set(key, t);
+      return t;
+    }
+  }catch(e){ console.warn('quest translate failed', e); }
+  return '';
+}
+
 function renderQuests(data) {
-const quests=Array.isArray(data?.daily_quests_en)?data.daily_quests_en:[];
-const suppliedAr=Array.isArray(data?.daily_quests_ar)?data.daily_quests_ar:[];
-$('questDate').textContent=data?.daily_quests_date_pacific || localDateKey();$('questSourceLabel').textContent=quests.length ? 'تُحمّل من السيرفر' : 'بانتظار توفر بيانات المهام';
+const quests = Array.isArray(data?.daily_quests_en) ? data.daily_quests_en : [];
+const suppliedAr = Array.isArray(data?.daily_quests_ar) ? data.daily_quests_ar : [];
+$('questDate').textContent = data?.daily_quests_date_pacific || localDateKey();
+$('questSourceLabel').textContent = quests.length ? 'تُحمّل من السيرفر' : 'بانتظار توفر بيانات المهام';
 const questDate = data?.daily_quests_date_pacific || localDateKey();
 if (checkedQuestDate !== questDate) { checkedQuestDate = questDate; checkedQuestTexts.clear(); }
 if(!quests.length) {
-$('questList').innerHTML='<div class="empty-state">لا توجد مهام محفوظة حاليًا. جرّب زر «تحديث».</div>';
-$('questProgressText').textContent='0 من 4'; $('questProgressBar').style.width='0%'; return;
+  $('questList').innerHTML = '<div class="empty-state">لا توجد مهام محفوظة حاليًا. جرّب زر «تحديث».</div>';
+  $('questProgressText').textContent = '0 من 4';
+  $('questProgressBar').style.width = '0%';
+  return;
 }
-$('questList').innerHTML=quests.slice(0,4).map((q,i)=>{
-const translated=suppliedAr[i] ? {ar:suppliedAr[i],en:q} : arabicQuest(q);
-const isDone=checkedQuestTexts.has(String(q));
-const image=Array.isArray(data?.daily_quest_images)?String(data.daily_quest_images[i]||''):'';
-const localImage=/^assets\/[A-Za-z0-9._-]+\.(?:jpg|png|webp|gif)$/i.test(image) ? new URL(image,document.baseURI).href : '';
-const thumb=localImage ? `<span class="quest-thumbnail"><img src="${escapeHtml(localImage)}" alt="" loading="lazy"></span>` : `<span class="quest-thumbnail" aria-hidden="true">${questIcon(q)}</span>`;
-return `<label class="quest ${isDone?'done':''}">${thumb}<input type="checkbox" data-quest-index="${i}" ${isDone?'checked':''}><span class="quest-copy"><strong>${escapeHtml(translated.ar)}</strong>${translated.en && translated.en!==translated.ar ? `<small>${escapeHtml(translated.en)}</small>`:''}</span></label>`;
+
+$('questList').innerHTML = quests.slice(0,4).map((rawQ,i)=>{
+  const cleanEn = decodeEntities(rawQ);
+  const supplied = suppliedAr[i] ? decodeEntities(suppliedAr[i]).trim() : '';
+  const hasArSupplied = supplied && /[\u0600-\u06FF]/.test(supplied) && supplied !== cleanEn;
+  const translated = hasArSupplied ? {ar: supplied, en: cleanEn} : arabicQuest(cleanEn);
+  const isDone = checkedQuestTexts.has(String(rawQ));
+  const image = Array.isArray(data?.daily_quest_images) ? String(data.daily_quest_images[i]||'') : '';
+  const localImage = /^assets\/[A-Za-z0-9._-]+\.(?:jpg|png|webp|gif)$/i.test(image) ? new URL(image,document.baseURI).href : '';
+  const thumb = localImage
+    ? `<span class="quest-thumbnail"><img src="${escapeHtml(localImage)}" alt="" loading="lazy"></span>`
+    : `<span class="quest-thumbnail" aria-hidden="true">${questIcon(cleanEn)}</span>`;
+  return `<label class="quest ${isDone?'done':''}">${thumb}<input type="checkbox" data-quest-index="${i}" ${isDone?'checked':''}><span class="quest-copy"><strong data-qtext="${escapeHtml(cleanEn)}">${escapeHtml(translated.ar)}</strong>${translated.en && translated.en !== translated.ar ? `<small>${escapeHtml(translated.en)}</small>` : ''}</span></label>`;
 }).join('');
 updateQuestProgress();
+
+// ترجمة احتياطية لأي مهمة ما لقيت ترجمة عربية محلية
+$('questList').querySelectorAll('strong[data-qtext]').forEach(async (el)=>{
+  const en = el.dataset.qtext;
+  const current = (el.textContent || '').trim();
+  const arabicRatio = (current.match(/[\u0600-\u06FF]/g) || []).length / Math.max(1, current.length);
+  if (current && arabicRatio > 0.4) return;
+  const auto = await translateQuestAuto(en);
+  if (auto) {
+    el.textContent = auto;
+    const small = el.parentElement?.querySelector('small');
+    if (small) small.textContent = en;
+  }
+});
+
 $('questList').querySelectorAll('input[data-quest-index]').forEach(input=>input.addEventListener('change',()=>{
-const q = String(quests[Number(input.dataset.questIndex)] || '');
-if (input.checked) checkedQuestTexts.add(q); else checkedQuestTexts.delete(q);
-input.closest('.quest').classList.toggle('done',input.checked);updateQuestProgress();
+  const q = String(quests[Number(input.dataset.questIndex)] || '');
+  if (input.checked) checkedQuestTexts.add(q); else checkedQuestTexts.delete(q);
+  input.closest('.quest').classList.toggle('done', input.checked);
+  updateQuestProgress();
 }));
+
 function updateQuestProgress(){
-const done=$('questList').querySelectorAll('input:checked').length;
-$('questProgressText').textContent=`${done} من ${Math.min(4,quests.length)}`;
-$('questProgressBar').style.width=`${Math.round(done/Math.min(4,quests.length)*100)}%`;
+  const done = $('questList').querySelectorAll('input:checked').length;
+  $('questProgressText').textContent = `${done} من ${Math.min(4, quests.length)}`;
+  $('questProgressBar').style.width = `${Math.round(done / Math.min(4, quests.length) * 100)}%`;
 }
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -1119,7 +1201,7 @@ if(dataRefreshTimer) clearInterval(dataRefreshTimer);
 dataRefreshTimer=null;
 if(document.visibilityState==='visible') dataRefreshTimer=setInterval(()=>{
 if(document.visibilityState==='visible') refreshData(false);
-},60000);
+},30000);
 }
 document.addEventListener('visibilitychange',()=>{
 if(document.visibilityState==='visible'){refreshData(false);startDataPolling();}
