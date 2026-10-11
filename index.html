@@ -62,7 +62,7 @@ body::before{
     linear-gradient(180deg,#050813 0%,#0a1030 38%,#1b1745 72%,#3a2253 100%);
 }
 body::after{
-  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.8;
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.4;
   background-image:
     radial-gradient(1.2px 1.2px at 8% 14%,#fff,transparent 60%),
     radial-gradient(1px 1px at 19% 61%,rgba(255,255,255,.7),transparent 60%),
@@ -79,7 +79,7 @@ body::after{
   mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 95%);
   animation:twinkle 8s ease-in-out infinite alternate;
 }
-@keyframes twinkle{from{opacity:.5}to{opacity:.95}}
+@keyframes twinkle{from{opacity:.25}to{opacity:.5}}
 a{color:var(--sky);text-decoration:none}
 a:hover{text-decoration:underline}
 button{font:inherit;cursor:pointer;color:inherit}
@@ -87,6 +87,59 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 ::selection{background:rgba(255,184,107,.4)}
 .skip{position:absolute;inset-inline-start:12px;top:-60px;background:var(--sun);color:#1b1130;padding:8px 14px;border-radius:10px;z-index:100;font-weight:700}
 .skip:focus{top:10px}
+
+/* ===== طبقات النجوم المتحركة (Moonlit) ===== */
+.starfield{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.star-layer{position:absolute;inset:-12%;display:block;will-change:transform,background-position,opacity}
+.star-layer-a{
+  opacity:.78;
+  background-image:
+    radial-gradient(1.4px 1.4px at 8% 12%,rgba(245,250,255,.95) 40%,transparent 75%),
+    radial-gradient(1px 1px at 17% 69%,rgba(195,226,255,.9) 40%,transparent 75%),
+    radial-gradient(1.7px 1.7px at 31% 24%,rgba(255,255,255,.95) 40%,transparent 75%),
+    radial-gradient(1px 1px at 42% 83%,rgba(202,224,255,.8) 40%,transparent 75%),
+    radial-gradient(1.3px 1.3px at 56% 9%,rgba(255,255,255,.92) 40%,transparent 75%),
+    radial-gradient(1px 1px at 68% 48%,rgba(206,224,255,.85) 40%,transparent 75%),
+    radial-gradient(1.5px 1.5px at 79% 72%,rgba(255,255,255,.9) 40%,transparent 75%),
+    radial-gradient(1.2px 1.2px at 91% 32%,rgba(206,236,255,.95) 40%,transparent 75%);
+  background-size:390px 340px;
+  animation:star-drift-a 48s linear infinite, star-glow-a 6.5s ease-in-out infinite alternate;
+}
+.star-layer-b{
+  opacity:.48;
+  background-image:
+    radial-gradient(1px 1px at 12% 28%,#fff 35%,transparent 75%),
+    radial-gradient(1.2px 1.2px at 35% 62%,#c9c4ff 35%,transparent 75%),
+    radial-gradient(1px 1px at 61% 35%,#fff 35%,transparent 75%),
+    radial-gradient(1.5px 1.5px at 82% 81%,#d8eaff 35%,transparent 75%),
+    radial-gradient(1px 1px at 95% 14%,#fff 35%,transparent 75%);
+  background-size:530px 470px;
+  animation:star-drift-b 68s linear infinite, star-glow-b 8s ease-in-out infinite alternate;
+}
+.star-layer-c{
+  inset:0;
+  opacity:.25;
+  background-image:
+    radial-gradient(2px 2px at 21% 20%,#cceaff 20%,transparent 75%),
+    radial-gradient(2px 2px at 73% 57%,#d7d0ff 20%,transparent 75%),
+    radial-gradient(1.8px 1.8px at 48% 88%,#fff 20%,transparent 75%);
+  background-size:760px 680px;
+  animation:star-drift-c 90s linear infinite;
+}
+@keyframes star-drift-a{
+  from{background-position:0 0;transform:translate3d(0,0,0)}
+  to{background-position:390px 340px;transform:translate3d(-26px,18px,0)}
+}
+@keyframes star-drift-b{
+  from{background-position:0 0;transform:translate3d(0,0,0)}
+  to{background-position:-530px 470px;transform:translate3d(20px,-15px,0)}
+}
+@keyframes star-drift-c{
+  from{background-position:0 0}
+  to{background-position:380px -340px}
+}
+@keyframes star-glow-a{from{opacity:.3}to{opacity:.82}}
+@keyframes star-glow-b{from{opacity:.2}to{opacity:.58}}
 
 .app{padding-bottom:calc(104px + var(--safe-b))}
 .shell{width:min(1240px,calc(100% - 28px));margin-inline:auto}
@@ -433,10 +486,11 @@ input::placeholder{color:#5b6488}
   .footer-links{margin-top:10px}
 }
 @media(min-width:1024px){.news-card:first-child:nth-last-child(n+3){grid-column:span 2}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.star-layer{animation:none!important;transform:none!important}}
 </style>
 </head>
 <body>
+<div class="starfield" aria-hidden="true"><span class="star-layer star-layer-a"></span><span class="star-layer star-layer-b"></span><span class="star-layer star-layer-c"></span></div>
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>
 <div class="app">
 <div class="shell">
