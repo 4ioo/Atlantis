@@ -1,16 +1,16 @@
 {
-  "daily_quests_date_pacific": "2026-10-13",
+  "daily_quests_date_pacific": "2026-10-14",
   "daily_quests_en": [
-    "Call to 5 different players",
-    "Melt 10 darkness",
-    "Catch the wandering lights in the Graveyard",
-    "Visit the bonfire at the Wasteland&#x27;s Graveyard"
+    "Admire the sapling in the Vault of Knowledge",
+    "Sit on a bench with a stranger",
+    "Relive a spirit&#x27;s memories",
+    "Relive the Levitating Adept"
   ],
   "daily_quests_ar": [
-    "Call إلى 5 different players",
-    "Melt 10 darkness",
-    "التقط wandering lights في Graveyard",
-    "زُر bonfire عند Wasteland&#x27;s Graveyard"
+    "تأمّل sapling في قبو المعرفة",
+    "Sit على bench مع stranger",
+    "Relive spirit&#x27;s memories",
+    "Relive Levitating Adept"
   ],
   "quest_source": "https://thatskyapplication.com/daily-guides",
   "quest_api_source": "https://quest.skyapi.shhy.in/?lang=en",
@@ -19,24 +19,30 @@
     {
       "title": "Radiance",
       "title_ar": "حدث الإشعاع",
-      "detail": "باقي 2 أيام",
+      "detail": "باقي يوم واحد",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "The new season",
       "title_ar": "الموسم الجديد",
-      "detail": "يبدأ بعد 3 أيام",
+      "detail": "يبدأ بعد 2 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Days of Mischief",
       "title_ar": "أيام الشقاوة",
-      "detail": "يبدأ بعد 10 أيام",
+      "detail": "يبدأ بعد 9 أيام",
+      "source_url": "https://thatskyapplication.com/daily-guides"
+    },
+    {
+      "title": "Sky × Cinnamoroll Pop-Up Cafe",
+      "title_ar": "Sky × Cinnamoroll Pop-Up Cafe",
+      "detail": "يبدأ بعد 34 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-10-14T02:40:55Z",
+  "timeline_updated_utc": "2026-10-14T08:03:48Z",
   "news": [
     {
       "title": "Update 35.0 - October 13th, 2026",
@@ -112,8 +118,8 @@
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-10-14T02:40:55Z",
-  "last_updated_utc": "2026-10-14T02:40:55Z",
+  "news_updated_utc": "2026-10-14T08:03:48Z",
+  "last_updated_utc": "2026-10-14T08:03:48Z",
   "spirit": {
     "name": "Talented Builder",
     "name_ar": "البنّاء الموهوب",
@@ -122,43 +128,43 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح القادمة",
-    "last_updated": "2026-10-14T02:40:55Z",
+    "last_updated": "2026-10-14T08:03:48Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/ac/Flight-Spirit-Talented-Builder.png"
   },
   "daily_quests_locations": [
-    "",
+    "Vault of Knowledge",
     "",
     "",
     ""
   ],
   "shard": {
-    "date": "2026-10-13T00:00:00-07:00",
-    "is_red": true,
-    "has_shard": false,
-    "realm": "valley",
-    "realm_ar": "الوادي",
-    "map": "valley.dreams",
-    "map_ar": "قرية الأحلام",
-    "reward_ac": 2.5,
-    "num_variant": 2,
-    "image_url": null,
+    "date": "2026-10-14T00:00:00-07:00",
+    "is_red": false,
+    "has_shard": true,
+    "realm": "wasteland",
+    "realm_ar": "الأرض القاحلة",
+    "map": "wasteland.battlefield",
+    "map_ar": "ساحة المعركة",
+    "reward_ac": null,
+    "num_variant": 3,
+    "image_url": "https://sky-shards.pages.dev/infographics/map_varient_clement/wasteland.battlefield.1.webp",
     "occurrences": [
       {
-        "start_utc": "2026-10-13T14:40:00Z",
-        "land_utc": "2026-10-13T14:48:40Z",
-        "end_utc": "2026-10-13T18:40:00Z"
+        "start_utc": "2026-10-14T09:10:00Z",
+        "land_utc": "2026-10-14T09:18:40Z",
+        "end_utc": "2026-10-14T13:10:00Z"
       },
       {
-        "start_utc": "2026-10-13T20:40:00Z",
-        "land_utc": "2026-10-13T20:48:40Z",
-        "end_utc": "2026-10-14T00:40:00Z"
+        "start_utc": "2026-10-14T17:10:00Z",
+        "land_utc": "2026-10-14T17:18:40Z",
+        "end_utc": "2026-10-14T21:10:00Z"
       },
       {
-        "start_utc": "2026-10-14T02:40:00Z",
-        "land_utc": "2026-10-14T02:48:40Z",
-        "end_utc": "2026-10-14T06:40:00Z"
+        "start_utc": "2026-10-15T01:10:00Z",
+        "land_utc": "2026-10-15T01:18:40Z",
+        "end_utc": "2026-10-15T05:10:00Z"
       }
     ],
-    "last_end_utc": "2026-10-14T06:40:00Z"
+    "last_end_utc": "2026-10-15T05:10:00Z"
   }
 }
