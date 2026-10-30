@@ -36,8 +36,17 @@
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-10-30T19:39:17Z",
+  "timeline_updated_utc": "2026-10-30T23:17:38Z",
   "news": [
+    {
+      "title": "Hotfix 35.2 - October 30, 2026",
+      "title_ar": "Hotfix 35.2 - October 30, 2026",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1847920302240268",
+      "published_utc": "2026-10-30T20:00:30Z",
+      "summary_en": "Greetings, Adventurers! We have a hotfix! Please note: This update will be available on all platforms, but may take up to a week and a half to reach your device due to differences in each platform’s hotfix process. Thank you for your understanding.   \n Changes and fixes in this u",
+      "summary_ar": "Greetings, Adventurers! We have a hotfix! Please note: This update will be available on all platforms, but may take up to a week and a half to reach your device due to differences in each platform’s hotfix process. Thank you for your understanding.   \n Changes and fixes in this u",
+      "full_en": "Greetings, Adventurers! We have a hotfix! Please note: This update will be available on all platforms, but may take up to a week and a half to reach your device due to differences in each platform’s hotfix process. Thank you for your understanding.   \n Changes and fixes in this update include: \n \\ Fix for the particle effect on the Star Trail Pin \\ Fix for the Oreo and Bunny form spells; strangers should now be able to see the spell effects \\ A potential fix has been implemented for a crash affecting some players during the Dark Dragons vs. Crabs minigame in Days of Mischief. If you encounter this crash after the update, please submit a bug report. Thank you!  \n As always, we look forward to hearing your feedback, and encourage you to join the community discussion on our official Discord server at discord.gg/thatskygame !"
+    },
     {
       "title": "Hotfix 35.1 - October 15, 2026",
       "title_ar": "Hotfix 35.1 - October 15, 2026",
@@ -100,20 +109,11 @@
       "summary_en": "Sky News Update 34.5 August 25th Our next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goes live on August 25th. \n Days of Sunlight July 31st - August 20th Days of Sunlight will",
       "summary_ar": "Sky News Update 34.5 August 25th Our next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goes live on August 25th. \n Days of Sunlight July 31st - August 20th Days of Sunlight will",
       "full_en": "Sky News Update 34.5 August 25th Our next regular update is on its way! Keep an eye out on our Patch Notes page, linked at the bottom of this article, for details on the 34.5 update when it goes live on August 25th. \n Days of Sunlight July 31st - August 20th Days of Sunlight will run through August 20th, so make sure to visit the event space in Hidden Forest and enjoy some summer fun! For those who aren’t quite ready to say farewell when the event ends, the lake will stick around for a few days so Sky Kids can enjoy some extra time in the water. \n Summer Camping Event August 28th - September 10th Between Days of Sunlight and Days of Moonlight, get cozy during our Summer Camping Event! Create and share your dream campsite, relax by the bonfire, and take some deep breaths while enjoying the beautiful scenery.   The group of spirits from Season of the Nine-Colored Deer will be visiting during this time, too! Make sure to say hi, and spend some time together before they leave on September 10th.  \n Radiance Event August 14th - 27th White and magenta Colored Light will appear more often from August 14th through 27th. Make sure to take advantage of this Radiance event if you’ve been looking for a dye refresh! \n Traveling Spirits August 13th - 16th August 27th - 30th Group spirit visit, Nine-Colored Deer: August 28th - September 10th Make sure to say hi to them and upgrade your friendships, since they leave on September 10th and won’t be available during Days of Moonlight. Community Announcements Aviary Stage Schedule Join Tethys on the Aviary stage every Tuesday and Thursday at 4:00pm Pacific Time for player interviews! Community Eden Run August 21st at 4:30pm Pacific Time Join staff members and other Sky Kids for another group trip through the storm! Festival tech will be enabled, and staff members broadcasting their Sky Kids so everyone can join in as they make their way through Eden. Sky Creator Features If you’d like to learn more about our content creator program or check out a few of the many amazing Sky content creators out there, you can check out our webpage:   amekkoro_sky on X \n godaisoren on Instagram \n suzumenosky on X \n tumbke on Instagram \n greyowl22tm on Instagram \n yyk718 on X \n\n #ThatSkyGame Player Submissions 👀 Would you like to see more content from other Sky kids? Would you like to be featured in next month’s edition? Use #ThatSkyGame on social media to search for even more Sky creations, or to share your own! Credits in this section are based on where images were shared using the #thatskygame tag. Some featured content may include other players’ characters or creations, such as avatars or Shared Spaces. We hope this glimpse of the Sky community’s creativity inspires you to explore more creations and share your own! \n Shared by thatskychef on Instagram \n Shared by thatskyzeny on Instagram \n Shared by lifeasaskykid on Instagram \n Shared by thatgreatskyguy.dlt12 on Instagram \n\n Need More Information? You can find information posted on the in-game News board, and available through Sky’s gear menu and Support tabs. You can also use the links below. \n Contact our Player Support team, including our Trust & Safety specialists, here:   Check our Known Issues section for current major bugs players should be aware of: \n Please read our Patch Notes section for information about each game update, including new game content and bug fixes:   Want to see more of us on social media? Check out our Linktree!   Join our official global Discord community: \n For other Sky news, make sure to keep an eye on our website and blog pages:"
-    },
-    {
-      "title": "Hotfix 34.2 - July 28, 2026",
-      "title_ar": "Hotfix 34.2 - July 28, 2026",
-      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1839041357039102",
-      "published_utc": "2026-07-28T19:23:19Z",
-      "summary_en": "Greetings, Adventurers! We have a hotfix! \n Changes and fixes in this update include: \\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in the wrong position \\ Fixed some clipping issues with the paintings during Quest 3 \\ Fi",
-      "summary_ar": "Greetings, Adventurers! We have a hotfix! \n Changes and fixes in this update include: \\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in the wrong position \\ Fixed some clipping issues with the paintings during Quest 3 \\ Fi",
-      "full_en": "Greetings, Adventurers! We have a hotfix! \n Changes and fixes in this update include: \\ Fixed an issue that sometimes caused a softlock when replaying Quest 3 due to the camera getting stuck in the wrong position \\ Fixed some clipping issues with the paintings during Quest 3 \\ Fixed a graphical corruption issue for the Starry hair that would occur in Shared Memories \\ Fixed a softlock that could occur during Quest 3 if the player moved too far away during Van Gogh's monologue \\ Fixed an issue in Quest 3 that caused Van Gogh's backpack and canvas to appear black \\ Fixed an issue that caused brush strokes to disappear after using the return shrine to return to Quest 4 \\ Fixed the friendship menu appearing empty after rekindling a friendship with another player \\ Fixed an issue that caused some equipped props to remain disabled after exiting a Challenge \\ Fixed an issue where Nest capacity upgrades were not registering correctly, causing decorations to disappear from some players' Nests. This fix was implemented for other platforms in update 34.1 \\ Fixed a prop-related crash affecting some players after downloading 34.0. This fix was implemented for other platforms in update 34.1 We are aware of some issues still affecting players that were not able to be addressed with this patch, and are working on fixes. Please keep an eye out on our Known Issues and future update notes for more information. Thank you for your patience. As always, we look forward to hearing your feedback, and encourage you to join the community discussion on our official Discord server at discord.gg/thatskygame !"
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-10-30T19:39:17Z",
-  "last_updated_utc": "2026-10-30T19:39:17Z",
+  "news_updated_utc": "2026-10-30T23:17:38Z",
+  "last_updated_utc": "2026-10-30T23:17:38Z",
   "spirit": {
     "name": "Scarecrow Farmer",
     "name_ar": "Scarecrow Farmer",
@@ -122,7 +122,7 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح القادمة",
-    "last_updated": "2026-10-30T19:39:17Z",
+    "last_updated": "2026-10-30T23:17:38Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/a1/Enchantment-Spirit-Scarecrow-Farmer.png"
   },
   "daily_quests_locations": [
