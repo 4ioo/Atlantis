@@ -1,16 +1,16 @@
 {
-  "daily_quests_date_pacific": "2026-10-30",
+  "daily_quests_date_pacific": "2026-10-31",
   "daily_quests_en": [
-    "Admire the sapling in the Daylight Prairie",
-    "Use expressions with players",
-    "Relive a spirit&#x27;s memories in the Daylight Prairie",
-    "Forge a candle"
+    "Call to 5 different players",
+    "Find the candles at the end of the rainbow in the Hidden Forest",
+    "Pick up a crab",
+    "Tidy up the Ancestor&#x27;s table in the Elevated Clearing"
   ],
   "daily_quests_ar": [
-    "تأمّل sapling في مرج ضوء النهار",
-    "استخدم التعابير مع اللاعبين",
-    "Relive spirit&#x27;s memories في مرج ضوء النهار",
-    "Forge candle"
+    "Call إلى 5 different players",
+    "ابحث عن candles عند end rainbow في الغابة المخفية",
+    "Pick up crab",
+    "Tidy up Ancestor&#x27;s table في Elevated Clearing"
   ],
   "quest_source": "https://thatskyapplication.com/daily-guides",
   "quest_api_source": "https://quest.skyapi.shhy.in/?lang=en",
@@ -19,24 +19,24 @@
     {
       "title": "the season",
       "title_ar": "the season",
-      "detail": "باقي 62 أيام",
+      "detail": "باقي 61 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Days of Mischief",
       "title_ar": "أيام الشقاوة",
-      "detail": "باقي 13 أيام",
+      "detail": "باقي 12 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Sky × Cinnamoroll Pop-Up Cafe",
       "title_ar": "Sky × Cinnamoroll Pop-Up Cafe",
-      "detail": "يبدأ بعد 18 أيام",
+      "detail": "يبدأ بعد 17 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-10-31T02:31:16Z",
+  "timeline_updated_utc": "2026-10-31T08:49:39Z",
   "news": [
     {
       "title": "Hotfix 35.2 - October 30, 2026",
@@ -112,8 +112,8 @@
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-10-31T02:31:16Z",
-  "last_updated_utc": "2026-10-31T02:31:16Z",
+  "news_updated_utc": "2026-10-31T08:49:39Z",
+  "last_updated_utc": "2026-10-31T08:49:39Z",
   "spirit": {
     "name": "Scarecrow Farmer",
     "name_ar": "Scarecrow Farmer",
@@ -122,43 +122,43 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح القادمة",
-    "last_updated": "2026-10-31T02:31:16Z",
+    "last_updated": "2026-10-31T08:49:39Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/a/a1/Enchantment-Spirit-Scarecrow-Farmer.png"
   },
   "daily_quests_locations": [
-    "Daylight Prairie",
     "",
-    "Daylight Prairie",
+    "Hidden Forest",
+    "",
     ""
   ],
   "shard": {
-    "date": "2026-10-30T00:00:00-07:00",
-    "is_red": false,
+    "date": "2026-10-31T00:00:00-07:00",
+    "is_red": true,
     "has_shard": true,
-    "realm": "vault",
-    "realm_ar": "قبو المعرفة",
-    "map": "vault.starlight",
-    "map_ar": "صحراء ضوء النجوم",
-    "reward_ac": null,
-    "num_variant": 3,
-    "image_url": "https://sky-shards.pages.dev/infographics/map_varient_clement/vault.starlight.1.webp",
+    "realm": "prairie",
+    "realm_ar": "المرج",
+    "map": "prairie.cave",
+    "map_ar": "الكهف",
+    "reward_ac": 2,
+    "num_variant": 1,
+    "image_url": "https://sky-shards.pages.dev/infographics/map_varient_clement/prairie.cave.1.webp",
     "occurrences": [
       {
-        "start_utc": "2026-10-30T09:10:00Z",
-        "land_utc": "2026-10-30T09:18:40Z",
-        "end_utc": "2026-10-30T13:10:00Z"
+        "start_utc": "2026-10-31T14:40:00Z",
+        "land_utc": "2026-10-31T14:48:40Z",
+        "end_utc": "2026-10-31T18:40:00Z"
       },
       {
-        "start_utc": "2026-10-30T17:10:00Z",
-        "land_utc": "2026-10-30T17:18:40Z",
-        "end_utc": "2026-10-30T21:10:00Z"
+        "start_utc": "2026-10-31T20:40:00Z",
+        "land_utc": "2026-10-31T20:48:40Z",
+        "end_utc": "2026-11-01T00:40:00Z"
       },
       {
-        "start_utc": "2026-10-31T01:10:00Z",
-        "land_utc": "2026-10-31T01:18:40Z",
-        "end_utc": "2026-10-31T05:10:00Z"
+        "start_utc": "2026-11-01T02:40:00Z",
+        "land_utc": "2026-11-01T02:48:40Z",
+        "end_utc": "2026-11-01T06:40:00Z"
       }
     ],
-    "last_end_utc": "2026-10-31T05:10:00Z"
+    "last_end_utc": "2026-11-01T06:40:00Z"
   }
 }
