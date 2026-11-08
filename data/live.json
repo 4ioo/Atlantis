@@ -1,16 +1,16 @@
 {
-  "daily_quests_date_pacific": "2026-11-07",
+  "daily_quests_date_pacific": "2026-11-08",
   "daily_quests_en": [
-    "Relive a spirit&#x27;s memories in the Golden Wasteland",
-    "Face the dark dragon",
-    "Meet up with Crab Whisperer in Crab Fields",
-    "Pick up a crab"
+    "Collect purple light",
+    "Relive the Wise Grandparent",
+    "Relive a spirit&#x27;s memories in the Vault of Knowledge",
+    "Melt 10 darkness"
   ],
   "daily_quests_ar": [
-    "Relive spirit&#x27;s memories في الأرض الذهبية القاحلة",
-    "Face dark dragon",
-    "التقِ بـ همّاس السلطعون في Crab Fields",
-    "Pick up crab"
+    "Collect purple light",
+    "Relive Wise Grandparent",
+    "Relive spirit&#x27;s memories في قبو المعرفة",
+    "Melt 10 darkness"
   ],
   "quest_source": "https://thatskyapplication.com/daily-guides",
   "quest_api_source": "https://quest.skyapi.shhy.in/?lang=en",
@@ -19,30 +19,30 @@
     {
       "title": "the season",
       "title_ar": "the season",
-      "detail": "باقي 54 أيام",
+      "detail": "باقي 53 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Days of Mischief",
       "title_ar": "أيام الشقاوة",
-      "detail": "باقي 5 أيام",
+      "detail": "باقي 4 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Sky × Cinnamoroll Pop-Up Cafe",
       "title_ar": "Sky × Cinnamoroll Pop-Up Cafe",
-      "detail": "يبدأ بعد 6 أيام",
+      "detail": "يبدأ بعد 5 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
       "title": "Days of Style",
       "title_ar": "Days of Style",
-      "detail": "يبدأ بعد 20 أيام",
+      "detail": "يبدأ بعد 19 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-11-08T07:37:26Z",
+  "timeline_updated_utc": "2026-11-08T14:34:18Z",
   "news": [
     {
       "title": "Китайские фанаты Sky: Children of the Light начали строить летательные аппараты из мусора ради подражания любимой игре",
@@ -118,8 +118,8 @@
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-11-08T07:37:26Z",
-  "last_updated_utc": "2026-11-08T07:37:26Z",
+  "news_updated_utc": "2026-11-08T14:34:18Z",
+  "last_updated_utc": "2026-11-08T14:34:18Z",
   "spirit": {
     "name": "Hairtousle Teen",
     "name_ar": "المراهق الأشعث",
@@ -128,43 +128,43 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح الحالية",
-    "last_updated": "2026-11-08T07:37:26Z",
+    "last_updated": "2026-11-08T14:34:18Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/9/9f/Belonging-Spirit-Hairtousle-Teen.png"
   },
   "daily_quests_locations": [
-    "Golden Wasteland",
     "",
     "",
+    "Vault of Knowledge",
     ""
   ],
   "shard": {
-    "date": "2026-11-07T00:00:00-08:00",
-    "is_red": true,
-    "has_shard": true,
-    "realm": "forest",
-    "realm_ar": "الغابة",
-    "map": "forest.end",
-    "map_ar": "حديقة الغابة",
-    "reward_ac": 2.5,
-    "num_variant": 2,
-    "image_url": "https://sky-shards.pages.dev/infographics/map_varient_clement/forest.end.1.webp",
+    "date": "2026-11-08T00:00:00-08:00",
+    "is_red": false,
+    "has_shard": false,
+    "realm": "valley",
+    "realm_ar": "الوادي",
+    "map": "valley.rink",
+    "map_ar": "حلبة الجليد",
+    "reward_ac": null,
+    "num_variant": 3,
+    "image_url": null,
     "occurrences": [
       {
-        "start_utc": "2026-11-07T15:40:00Z",
-        "land_utc": "2026-11-07T15:48:40Z",
-        "end_utc": "2026-11-07T19:40:00Z"
+        "start_utc": "2026-11-08T09:50:00Z",
+        "land_utc": "2026-11-08T09:58:40Z",
+        "end_utc": "2026-11-08T13:50:00Z"
       },
       {
-        "start_utc": "2026-11-07T21:40:00Z",
-        "land_utc": "2026-11-07T21:48:40Z",
-        "end_utc": "2026-11-08T01:40:00Z"
+        "start_utc": "2026-11-08T17:50:00Z",
+        "land_utc": "2026-11-08T17:58:40Z",
+        "end_utc": "2026-11-08T21:50:00Z"
       },
       {
-        "start_utc": "2026-11-08T03:40:00Z",
-        "land_utc": "2026-11-08T03:48:40Z",
-        "end_utc": "2026-11-08T07:40:00Z"
+        "start_utc": "2026-11-09T01:50:00Z",
+        "land_utc": "2026-11-09T01:58:40Z",
+        "end_utc": "2026-11-09T05:50:00Z"
       }
     ],
-    "last_end_utc": "2026-11-08T07:40:00Z"
+    "last_end_utc": "2026-11-09T05:50:00Z"
   }
 }
