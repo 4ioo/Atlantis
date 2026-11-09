@@ -29,8 +29,8 @@
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
     {
-      "title": "Sky × Cinnamoroll Pop-Up Cafe",
-      "title_ar": "Sky × Cinnamoroll Pop-Up Cafe",
+      "title": "Double hearts",
+      "title_ar": "Double hearts",
       "detail": "يبدأ بعد 4 أيام",
       "source_url": "https://thatskyapplication.com/daily-guides"
     },
@@ -42,7 +42,7 @@
     }
   ],
   "timeline_source": "https://thatskyapplication.com/daily-guides",
-  "timeline_updated_utc": "2026-11-09T09:56:50Z",
+  "timeline_updated_utc": "2026-11-09T20:39:39Z",
   "news": [
     {
       "title": "Китайские фанаты Sky: Children of the Light начали строить летательные аппараты из мусора ради подражания любимой игре",
@@ -118,8 +118,8 @@
     }
   ],
   "news_source": "https://store.steampowered.com/news/app/2325290/",
-  "news_updated_utc": "2026-11-09T09:56:50Z",
-  "last_updated_utc": "2026-11-09T09:56:50Z",
+  "news_updated_utc": "2026-11-09T20:39:39Z",
+  "last_updated_utc": "2026-11-09T20:39:39Z",
   "spirit": {
     "name": "Hairtousle Teen",
     "name_ar": "المراهق الأشعث",
@@ -128,7 +128,7 @@
     "source_kind": "skygame-data",
     "source_url": "https://unpkg.com/skygame-data@latest/assets/traveling-spirits.json",
     "status_label": "الروح القادمة",
-    "last_updated": "2026-11-09T09:56:50Z",
+    "last_updated": "2026-11-09T20:39:39Z",
     "image_url": "https://static.wikia.nocookie.net/sky-children-of-the-light/images/9/9f/Belonging-Spirit-Hairtousle-Teen.png"
   },
   "daily_quests_locations": [
